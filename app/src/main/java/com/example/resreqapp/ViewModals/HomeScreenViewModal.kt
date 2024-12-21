@@ -3,6 +3,7 @@ package com.example.resreqapp.ViewModals
 import AuthDefaultState
 import HomeScreenDefaultState
 import android.util.Log
+import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.lifecycle.ViewModel
 import com.example.mytodoandroid.helper.Resource
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
@@ -28,7 +29,11 @@ class HomeScreenViewModal (
     private val _appViewModal = MutableStateFlow(HomeScreenDefaultState())
     val homeScreenState = _appViewModal.asStateFlow()
 
-    fun toTestAuth (){
+    init {
+        getUserToDo()
+    }
+
+    private fun getUserToDo (){
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.getUserToDos(
             ).collectLatest {
@@ -43,10 +48,12 @@ class HomeScreenViewModal (
                             override fun onResponse(call: Call<ToDoResponse>, response: Response<ToDoResponse>) {
                                 if (response.isSuccessful) {
                                     _appViewModal.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            toDoList = it.toDoList?: emptyList()
-                                        )
+                                        response.body()?.todo?.let { it1 ->
+                                            it.copy(
+                                                isLoading = false,
+                                                toDoList = it1
+                                            )
+                                        }!!
                                     }
                                 } else {
                                     if (response.code() == 401){

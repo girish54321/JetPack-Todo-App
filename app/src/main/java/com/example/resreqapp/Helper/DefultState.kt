@@ -56,3 +56,7 @@ data class HomeScreenDefaultState(
     val errorMessage: ErrorMainBody? = null,
     val toDoList: List<Todo> = emptyList()
 )
+
+data class SettingsScreenDefaultState(
+    val showLogOutModal: Boolean = false,
+)

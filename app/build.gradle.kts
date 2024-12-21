@@ -105,4 +105,7 @@ dependencies {
     // For Proto DataStore
     implementation("androidx.datastore:datastore-core:1.1.1")
 
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
+
 }

@@ -25,6 +25,10 @@ fun ToDoItem(
             .fillMaxWidth()
             .padding(16.dp),
     ) {
+        Checkbox(
+            checked = isChecked,
+            onCheckedChange = onCheckedChange
+        )
         Column(
             modifier = Modifier.weight(1f)
         ) {

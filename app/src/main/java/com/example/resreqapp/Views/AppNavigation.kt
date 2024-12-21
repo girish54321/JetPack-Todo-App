@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.resreqapp.Helper.Screen
 import com.example.resreqapp.Screen.Auth.LoginScreen
 import com.example.resreqapp.Screen.MainScreen.MainScreen
+import com.example.resreqapp.Screen.SettingsScreen.SettingsScreen
 import com.example.resreqapp.ViewModals.AuthViewModal
 
 @Composable
@@ -28,7 +29,9 @@ fun AppNavigation() {
         composable(Screen.MainScreen.rout) {
             MainScreen(authViewModal, navController)
         }
-
+        composable(Screen.ToDoDetailsScreen.rout){
+            SettingsScreen()
+        }
     }
 
 }
