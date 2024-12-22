@@ -50,6 +50,7 @@ fun MainScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
+                    todoScreenViewModal.removeToDo()
                     navController.navigate(Screen.CreateTodoScreen.rout)
                 },
             ) {
@@ -69,7 +70,6 @@ fun MainScreen(
             0 -> HomeScreen(navController, padding,todoScreenViewModal)
             else -> {
                 SettingsScreen(
-//                    navController,padding
                 )
             }
         }

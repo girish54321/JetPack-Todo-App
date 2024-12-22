@@ -10,13 +10,21 @@ data class ToDoResponse (
     val todo: List<Todo>? = null
 )
 
+data class ToDoInfo (
+    val todo: Todo? = null,
+)
+
 data class Todo (
-    @SerializedName("toDoid" )
-    val toDoID: String? = null,
+//    @SerializedName("toDoid" )
+    val toDoId: String? = null,
     val title: String? = null,
     val body: String? = null,
     val state: String? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null,
     val userid: String? = null
+)
+
+data class SuccessResponse (
+   val success: Boolean? = null,
 )

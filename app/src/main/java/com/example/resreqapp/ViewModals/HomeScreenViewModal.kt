@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.lifecycle.ViewModel
 import com.example.mytodoandroid.helper.Resource
+import com.example.resreqapp.DataType.RemortData.SuccessResponse
+import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
 import com.example.resreqapp.DataType.RemortData.Todo
 import com.example.resreqapp.DataType.RemortData.parseError
@@ -23,7 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeScreenViewModal (
+class HomeScreenViewModal(
     private val perf: PerferenceDatastore = Graph.dataSource,
     private val authRepository: HomeScreenRepository = Graph.HomeScreenRepository,
 ) : ViewModel() {
@@ -34,7 +36,265 @@ class HomeScreenViewModal (
         getUserToDo()
     }
 
-    private fun getUserToDo (){
+    fun autoFileTodo(){
+        _appViewModal.update {
+            it.copy(
+                title = homeScreenState.value.selectedTodo?.title ?: "",
+                body = homeScreenState.value.selectedTodo?.body ?: "",
+                state = homeScreenState.value.selectedTodo?.state ?: "",
+            )
+        }
+    }
+
+    fun onTodoTitleChanged(title: String) {
+        _appViewModal.update {
+            it.copy(title = title)
+        }
+    }
+
+    fun onTodoBodyChanged(body: String) {
+        _appViewModal.update {
+            it.copy(body = body)
+        }
+    }
+
+    fun getSelectedTodoInfo () {
+        if(_appViewModal.value.selectedTodo == null){
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            authRepository.getTodoInfo(
+                todoID = homeScreenState.value.selectedTodo?.toDoId?: ""
+            ).collectLatest {
+                when(it){
+                    is Resource.Loading -> {
+                        _appViewModal.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        _appViewModal.update {
+                            it.copy(
+                                isLoading = false,
+                                isError = true,
+                            )
+                        }
+                    }
+                    is Resource.Success -> {
+                        it.data?.enqueue(object : Callback<ToDoInfo> {
+                            override fun onResponse(
+                                call: Call<ToDoInfo>,
+                                response: Response<ToDoInfo>
+                            ) {
+                                if (response.isSuccessful) {
+                                    _appViewModal.update {
+                                        it.copy(
+                                           selectedTodo = response.body()?.todo
+                                        )
+                                    }
+                                    getUserToDo()
+                                } else {
+                                    if (response.code() == 401) {
+                                        _appViewModal.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                isError = true,
+                                                errorMessage = parseError(response)
+                                            )
+                                        }
+                                    } else {
+                                        _appViewModal.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                isError = true,
+                                                errorMessage = parseError(response)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ToDoInfo>, t: Throwable) {
+                                _appViewModal.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isError = true,
+//                                        errorMessage = parseError(response)
+                                    )
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateTodo(
+        onSuccess: () -> Unit = {},
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            authRepository.updateTodo(
+                todoID = homeScreenState.value.selectedTodo?.toDoId ?: "",
+                title = homeScreenState.value.title,
+                body = homeScreenState.value.body,
+                state = homeScreenState.value.state
+            ).collectLatest {
+                when (it) {
+                    is Resource.Loading -> {
+                        _appViewModal.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        _appViewModal.update {
+                            it.copy(
+                                isLoading = false,
+                                isError = true,
+                            )
+                        }
+                    }
+
+                    is Resource.Success -> {
+                        it.data?.enqueue(object : Callback<SuccessResponse> {
+                            override fun onResponse(
+                                call: Call<SuccessResponse>,
+                                response: Response<SuccessResponse>
+                            ) {
+                                if (response.isSuccessful) {
+                                    _appViewModal.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isError = false,
+                                            title = "",
+                                            body = "",
+                                        )
+                                    }
+                                    onSuccess()
+                                    getUserToDo()
+                                    getSelectedTodoInfo()
+                                } else {
+                                    if (response.code() == 401) {
+                                        _appViewModal.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                isError = true,
+                                                errorMessage = parseError(response)
+                                            )
+                                        }
+                                    } else {
+                                        _appViewModal.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                isError = true,
+                                                errorMessage = parseError(response)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<SuccessResponse>, t: Throwable) {
+                                _appViewModal.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isError = true,
+//                                        errorMessage = parseError(response)
+                                    )
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+
+    fun createTodo(
+        onSuccess: () -> Unit = {},
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            authRepository.createToDo(
+                title = homeScreenState.value.title,
+                body = homeScreenState.value.body,
+                state = homeScreenState.value.state
+            ).collectLatest {
+                when (it) {
+                    is Resource.Loading -> {
+                        _appViewModal.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        _appViewModal.update {
+                            it.copy(
+                                isLoading = false,
+                                isError = true,
+                            )
+                        }
+                    }
+
+                    is Resource.Success -> {
+                        it.data?.enqueue(object : Callback<SuccessResponse> {
+                            override fun onResponse(
+                                call: Call<SuccessResponse>,
+                                response: Response<SuccessResponse>
+                            ) {
+                                if (response.isSuccessful) {
+                                    _appViewModal.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isError = false,
+                                            selectedTodo = null,
+                                            title = "",
+                                            body = ""
+                                        )
+                                    }
+                                    onSuccess()
+                                    getUserToDo()
+                                } else {
+                                    if (response.code() == 401) {
+                                        _appViewModal.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                isError = true,
+                                                errorMessage = parseError(response)
+                                            )
+                                        }
+                                    } else {
+                                        _appViewModal.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                isError = true,
+                                                errorMessage = parseError(response)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<SuccessResponse>, t: Throwable) {
+                                _appViewModal.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isError = true,
+//                                        errorMessage = parseError(response)
+                                    )
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun getUserToDo() {
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.getUserToDos(
             ).collectLatest {
@@ -44,9 +304,13 @@ class HomeScreenViewModal (
                             it.copy(isLoading = true)
                         }
                     }
+
                     is Resource.Success -> {
                         it.data?.enqueue(object : Callback<ToDoResponse> {
-                            override fun onResponse(call: Call<ToDoResponse>, response: Response<ToDoResponse>) {
+                            override fun onResponse(
+                                call: Call<ToDoResponse>,
+                                response: Response<ToDoResponse>
+                            ) {
                                 if (response.isSuccessful) {
                                     _appViewModal.update {
                                         response.body()?.todo?.let { it1 ->
@@ -57,7 +321,7 @@ class HomeScreenViewModal (
                                         }!!
                                     }
                                 } else {
-                                    if (response.code() == 401){
+                                    if (response.code() == 401) {
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
@@ -65,17 +329,17 @@ class HomeScreenViewModal (
                                             )
                                         }
                                     }
-//                                    doTheLog("AuthViewModal", "Error: ${response.code()} - ${response.message()}")
                                 }
                             }
-                            override fun onFailure(call: Call<ToDoResponse>, t: Throwable) {
-                              _appViewModal.update {
-                                  it.copy(
-                                      isLoading = false,
-//                                      errorMessage = parseError(t.message)
-                                  )
 
-                              }
+                            override fun onFailure(call: Call<ToDoResponse>, t: Throwable) {
+                                _appViewModal.update {
+                                    it.copy(
+                                        isLoading = false,
+//                                      errorMessage = parseError(t.message)
+                                    )
+
+                                }
                             }
                         })
                     }
@@ -88,7 +352,8 @@ class HomeScreenViewModal (
         }
     }
 
-    fun selectToDo (item: Todo){
+    fun selectToDo(item: Todo) {
+        Log.e("SlelectToDo",item.toString())
         _appViewModal.update {
             it.copy(
                 selectedTodo = item
@@ -96,7 +361,15 @@ class HomeScreenViewModal (
         }
     }
 
-    private fun removeToken(){
+    fun removeToDo() {
+        _appViewModal.update {
+            it.copy(
+                selectedTodo = null
+            )
+        }
+    }
+
+    private fun removeToken() {
         CoroutineScope(Dispatchers.IO).launch {
             perf.removeToken()
 //            appViewModal.update {

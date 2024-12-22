@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.example.resreqapp.Helper.Screen
 import com.example.resreqapp.ViewModals.HomeScreenViewModal
 import com.example.resreqapp.Views.AppBackButton
 
@@ -60,7 +61,11 @@ fun SelectedToDoScreen(
                         DropdownMenuItem(
                             leadingIcon={ Icon(Icons.Default.Edit, contentDescription = "More options")},
                             text = { Text("Edit") },
-                            onClick = { openCLoseMenu() }
+                            onClick = {
+                                todoScreenViewModal.autoFileTodo()
+                                openCLoseMenu()
+                                navController.navigate(Screen.CreateTodoScreen.rout)
+                            }
                         )
                         DropdownMenuItem(
                             leadingIcon={ Icon(Icons.Default.Delete, contentDescription = "More options")},

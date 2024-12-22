@@ -40,7 +40,8 @@ fun AppNavigation() {
         }
         composable(Screen.CreateTodoScreen.rout){
             CreateTodoScreen(
-                navController
+                navController,
+                todoScreenViewModal
             )
         }
     }

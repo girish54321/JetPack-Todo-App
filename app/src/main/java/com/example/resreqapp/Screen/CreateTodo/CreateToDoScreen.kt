@@ -1,10 +1,13 @@
 package com.example.resreqapp.Screen.CreateTodo
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -46,16 +49,21 @@ import com.example.resreqapp.ViewModals.AuthViewModal
 import com.example.resreqapp.ViewModals.HomeScreenViewModal
 import com.example.resreqapp.ViewModals.SettingsScreenViewModal
 import com.example.resreqapp.Views.AppBackButton
+import com.example.resreqapp.Views.AppInputErrorText
 import com.example.resreqapp.Views.AppInputText
 import com.example.resreqapp.Views.ToDoItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTodoScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    homeScreenViewModal: HomeScreenViewModal
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val appViewModal = homeScreenViewModal.homeScreenState.collectAsState().value
+
+    var isUpdate = appViewModal.selectedTodo != null
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -65,7 +73,7 @@ fun CreateTodoScreen(
                     AppBackButton(navController)
                 },
                 scrollBehavior = scrollBehavior,
-                title = { Text("Create Todo") },
+                title = { Text(if (isUpdate) "Update Todo" else "Create Todo") },
             )
         },
     ) {
@@ -77,24 +85,30 @@ fun CreateTodoScreen(
                 .padding(14.dp)
 
         ) {
-            Card (
-            ){
+            Card(
+            ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
                 ) {
                     AppInputText(
-                        value = "",
+                        value = appViewModal.title,
                         label = "Title",
-                        onValueChange = {},
+                        onValueChange = {
+                            homeScreenViewModal.onTodoTitleChanged(it)
+                        },
                         rightIcon = Icons.Filled.Edit
                     )
                     Box(
                         modifier = Modifier.padding(top = 11.dp)
                     )
                     AppInputText(
-                        value = "",
+                        value = appViewModal.body,
                         label = "Body",
-                        onValueChange = {},
+                        onValueChange = {
+                            homeScreenViewModal.onTodoBodyChanged(it)
+                        },
                         rightIcon = Icons.Filled.Info
                     )
                     Box(
@@ -107,19 +121,32 @@ fun CreateTodoScreen(
             )
             Button(
                 onClick = {
+                    if(isUpdate){
+                        homeScreenViewModal.updateTodo(onSuccess = {
+                            navController.popBackStack()
+                        })
+                    } else {
+                        homeScreenViewModal.createTodo(onSuccess = {
+                            navController.popBackStack()
+                        })
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Create Todo")
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            AppInputErrorText(
+                errorText = appViewModal.errorMessage?.error?.message ?: ""
+            )
         }
     }
 }
 
-@Preview
-@Composable
-fun SimpleComposablePreview() {
-    val navController = rememberNavController()
-    CreateTodoScreen(navController)
-}
+//@Preview
+//@Composable
+//fun SimpleComposablePreview() {
+//    val navController = rememberNavController()
+//    CreateTodoScreen(navController)
+//}
 

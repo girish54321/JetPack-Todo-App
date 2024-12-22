@@ -7,10 +7,22 @@ data class LoginPostBody(
     val password: String = ""
 )
 
-//data class LoginResRemote(
-//    @SerializedName("token")
-//    val token: String = ""
-//)
+//if (!toDoRequest?.title) {
+//    throw createError.BadRequest("Title is required")
+//}
+//if (!toDoRequest?.body) {
+//    throw createError.BadRequest("Body is required")
+//}
+//if (!toDoRequest?.state) {
+//    throw createError.BadRequest("State is required")
+//}
+
+data class CreateTodoRequestBody(
+    val title: String = "",
+    val body: String = "",
+    val state: String = "",
+    val toDoId: String = "",
+)
 
 data class LoginResRemote (
     @SerializedName("user")
