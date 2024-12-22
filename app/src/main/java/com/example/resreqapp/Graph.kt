@@ -6,13 +6,14 @@ import com.example.jetpackunsplash.Const.Constants.BASE_URL
 import com.example.resreqapp.API.AppApi
 import com.example.resreqapp.Domain.Repository.AuthRepository
 import com.example.resreqapp.Domain.Repository.HomeScreenRepository
+import com.example.resreqapp.Helper.ErrorChecker
 import com.example.resreqapp.Helper.OAuthInterceptor
 import com.example.resreqapp.Repository.AuthRepositoryImp
 import com.example.resreqapp.Repository.HomeScreenRepositoryImp
 import hoods.com.quotesyt.utils.PerferenceDatastore
-import kotlinx.coroutines.flow.firstOrNull
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -34,6 +35,26 @@ object Graph {
     }
     val HomeScreenRepository: HomeScreenRepository by lazy {
         HomeScreenRepositoryImp(api)
+    }
+
+    fun createErrorChecker(){
+//        val okHttpClient: OkHttpClient = HexFormat.Builder()
+////            .addInterceptor(object : Interceptor() {
+////                @Throws(IOException::class)
+////                fun intercept(chain: Chain): Response {
+////                    val request: Request = chain.request()
+////                    val response: Response = chain.proceed(request)
+////
+////                    // todo deal with the issues the way you need to
+////                    if (response.code() == SomeCode) {
+////                        //do something
+////                        return response
+////                    }
+////
+////                    return response
+////                }
+////            })
+////            .build()
     }
 
 //    fun apiWithAuthRepository () {
@@ -67,6 +88,9 @@ object Graph {
             .addInterceptor(intercptor)
             .addInterceptor(
                 OAuthInterceptor()
+            )
+            .addInterceptor(
+                ErrorChecker()
             )
             .build()
         api = Retrofit.Builder()
