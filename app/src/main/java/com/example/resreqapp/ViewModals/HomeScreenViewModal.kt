@@ -7,6 +7,7 @@ import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.lifecycle.ViewModel
 import com.example.mytodoandroid.helper.Resource
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
+import com.example.resreqapp.DataType.RemortData.Todo
 import com.example.resreqapp.DataType.RemortData.parseError
 import com.example.resreqapp.Domain.Repository.HomeScreenRepository
 import com.example.resreqapp.Graph
@@ -86,6 +87,15 @@ class HomeScreenViewModal (
             }
         }
     }
+
+    fun selectToDo (item: Todo){
+        _appViewModal.update {
+            it.copy(
+                selectedTodo = item
+            )
+        }
+    }
+
     private fun removeToken(){
         CoroutineScope(Dispatchers.IO).launch {
             perf.removeToken()

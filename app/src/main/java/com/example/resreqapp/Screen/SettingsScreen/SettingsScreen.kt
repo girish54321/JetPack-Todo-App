@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.ListItem
@@ -33,27 +35,33 @@ import com.example.resreqapp.Views.ToDoItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen (
+fun SettingsScreen(
 ) {
     val settingViewModal = hiltViewModel<SettingsScreenViewModal>()
     val appViewModal = settingViewModal.settingScreenState.collectAsState().value
-
     Scaffold(
         topBar = {
             LargeTopAppBar(
-                title = { Text("Login") },
+                title = { Text("Settings") },
             )
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { },
+            ) {
+                Icon(Icons.Filled.Add, "Floating action button.")
+            }
+        },
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(it)
         ) {
-            if(appViewModal.showLogOutModal) {
+            if (appViewModal.showLogOutModal) {
                 AlertDialog(
                     onDismissRequest = {
-                       settingViewModal.closeLogoutModal()
+                        settingViewModal.closeLogoutModal()
                     },
                     icon = { Icon(Icons.Filled.Lock, contentDescription = null) },
                     title = { Text(text = "Logout!") },

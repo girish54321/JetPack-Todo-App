@@ -1,5 +1,6 @@
 package com.example.resreqapp.Views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,17 +19,16 @@ fun ToDoItem(
     title: String,
     body: String,
     isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .padding(16.dp),
+
     ) {
-        Checkbox(
-            checked = isChecked,
-            onCheckedChange = onCheckedChange
-        )
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -59,6 +59,7 @@ fun PreviewListItemWithCheckbox() {
         title = "Title",
         body = "This is the body text of the list item.",
         isChecked = true,
-        onCheckedChange = {}
+        onCheckedChange = {},
+        onClick = {}
     )
 }

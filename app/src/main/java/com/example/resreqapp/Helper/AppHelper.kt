@@ -8,6 +8,7 @@ sealed class Screen(val rout: String) {
     object LoginScreen: Screen("LoginScreen")
     object MainScreen: Screen("MainScreen")
     object ToDoDetailsScreen: Screen("ToDoDetailsScreen")
+    object CreateTodoScreen: Screen("CreateTodoScreen")
 }
 
 fun NavController.navigateToSingleTop(route: String) {

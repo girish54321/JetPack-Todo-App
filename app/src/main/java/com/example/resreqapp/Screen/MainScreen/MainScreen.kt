@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -26,9 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.resreqapp.Helper.Screen
 import com.example.resreqapp.Screen.HomeScreen.HomeScreen
 import com.example.resreqapp.Screen.SettingsScreen.SettingsScreen
 import com.example.resreqapp.ViewModals.AuthViewModal
+import com.example.resreqapp.ViewModals.HomeScreenViewModal
 import com.example.resreqapp.Views.HomeBottomTabBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,11 +41,21 @@ import com.example.resreqapp.Views.HomeBottomTabBar
 fun MainScreen(
     authViewModal: AuthViewModal,
     navController: NavHostController,
+    todoScreenViewModal: HomeScreenViewModal
 ) {
     val authStateValue = authViewModal.authViewModalState.collectAsState().value
     var selectedItem by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(Screen.CreateTodoScreen.rout)
+                },
+            ) {
+                Icon(Icons.Filled.Add, "Floating action button.")
+            }
+        },
         bottomBar = {
             HomeBottomTabBar(
                 tabs = authStateValue.bottomNavItems,
@@ -51,7 +66,7 @@ fun MainScreen(
     ) {
         val padding = it
         when (selectedItem) {
-            0 -> HomeScreen(navController,padding)
+            0 -> HomeScreen(navController, padding,todoScreenViewModal)
             else -> {
                 SettingsScreen(
 //                    navController,padding
