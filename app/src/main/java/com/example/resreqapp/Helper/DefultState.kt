@@ -37,7 +37,7 @@ data class AuthDefaultState(
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home,
             hasNews = false,
-            badges = 8
+            badges = 0
         ),
         BottomNavItem(
             title = "Settings",

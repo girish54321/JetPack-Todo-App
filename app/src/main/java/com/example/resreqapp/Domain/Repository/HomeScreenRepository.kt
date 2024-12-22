@@ -1,6 +1,7 @@
 package com.example.resreqapp.Domain.Repository
 
 import com.example.mytodoandroid.helper.Resource
+import com.example.resreqapp.DataType.RemortData.DeleteResponse
 import com.example.resreqapp.DataType.RemortData.LoginResRemote
 import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
@@ -15,4 +16,5 @@ interface HomeScreenRepository {
     suspend fun createToDo(title: String, body: String,state: String): Flow<Resource<Call<SuccessResponse>>>
     suspend fun updateTodo(todoID: String, title: String, body: String,state: String): Flow<Resource<Call<SuccessResponse>>>
     suspend fun getTodoInfo(todoID: String): Flow<Resource<Call<ToDoInfo>>>
+    suspend fun deleteTodo(todoID: String): Flow<Resource<Call<DeleteResponse>>>
 }

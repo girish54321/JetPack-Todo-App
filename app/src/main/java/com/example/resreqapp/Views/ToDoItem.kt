@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,34 +23,40 @@ fun ToDoItem(
     onCheckedChange: (Boolean) -> Unit,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(16.dp),
-
-    ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = body,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+//    Row(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .clickable { onClick() }
+//            .padding(16.dp),
+//
+//    ) {
+//        Column(
+//            modifier = Modifier.weight(1f)
+//        ) {
+//            Text(
+//                text = title,
+//                style = MaterialTheme.typography.titleMedium,
+//                maxLines = 1,
+//                overflow = TextOverflow.Ellipsis
+//            )
+//            Text(
+//                text = body,
+//                style = MaterialTheme.typography.bodyMedium,
+//                maxLines = 2,
+//                overflow = TextOverflow.Ellipsis
+//            )
+//        }
 //        Checkbox(
 //            checked = isChecked,
 //            onCheckedChange = onCheckedChange
 //        )
-    }
+//    }
+    ListItem(
+        modifier = Modifier
+            .clickable { onClick() },
+        headlineContent = { Text(title) },
+        supportingContent = { Text(body) },
+    )
 }
 
 @Preview(showBackground = true)

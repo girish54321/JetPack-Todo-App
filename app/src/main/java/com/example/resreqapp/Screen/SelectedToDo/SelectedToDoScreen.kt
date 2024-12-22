@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +19,7 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,9 +40,14 @@ fun SelectedToDoScreen(
     ) {
     val appViewModal = todoScreenViewModal.homeScreenState.collectAsState().value
     var expanded by remember { mutableStateOf(false) }
+    var showDeleteModal by remember { mutableStateOf(false) }
 
     fun openCLoseMenu(){
         expanded = !expanded
+    }
+
+    fun closeDeleteModal(){
+        showDeleteModal = false
     }
 
     Scaffold(
@@ -70,7 +77,10 @@ fun SelectedToDoScreen(
                         DropdownMenuItem(
                             leadingIcon={ Icon(Icons.Default.Delete, contentDescription = "More options")},
                             text = { Text("Delete") },
-                            onClick = { openCLoseMenu() }
+                            onClick = {
+                                showDeleteModal =!showDeleteModal
+                                openCLoseMenu()
+                            }
                         )
                     }
                 }
@@ -82,6 +92,33 @@ fun SelectedToDoScreen(
                 .fillMaxWidth()
                 .padding(it)
         ) {
+            if (showDeleteModal) {
+                AlertDialog(
+                    onDismissRequest = {
+                        closeDeleteModal()
+                    },
+                    icon = { Icon(Icons.Filled.Lock, contentDescription = null) },
+                    title = { Text(text = "Delete?") },
+                    text = {
+                        Text(
+                            "Are you sure you?"
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            todoScreenViewModal.deleteTodo {
+                                navController.navigateUp()
+                                showDeleteModal = false
+                            }
+                        }) { Text("Yes") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            closeDeleteModal()
+                        }) { Text("No") }
+                    }
+                )
+            }
             ListItem(
                 modifier = Modifier
                     .clickable {  },

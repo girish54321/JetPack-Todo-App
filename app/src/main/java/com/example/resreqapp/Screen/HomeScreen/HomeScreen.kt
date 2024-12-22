@@ -58,6 +58,11 @@ fun HomeScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
+                actions = {
+                    IconButton(onClick = { todoScreenViewModal.updateTodo(0,"Local Title","Some Long Text") }) {
+                        Icon(Icons.Filled.Add, contentDescription = "Add new Todo")
+                    }
+                },
                 title = {
                     Text(
                         "My Todo",

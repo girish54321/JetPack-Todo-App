@@ -26,3 +26,7 @@ data class Todo (
 data class SuccessResponse (
    val success: Boolean? = null,
 )
+
+data class DeleteResponse (
+    val deleted: Boolean? = null,
+)

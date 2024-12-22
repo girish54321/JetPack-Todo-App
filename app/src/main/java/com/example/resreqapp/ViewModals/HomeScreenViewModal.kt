@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.lifecycle.ViewModel
 import com.example.mytodoandroid.helper.Resource
+import com.example.resreqapp.DataType.RemortData.DeleteResponse
 import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
@@ -34,6 +35,19 @@ class HomeScreenViewModal(
 
     init {
         getUserToDo()
+    }
+
+    //TODO: try this
+    fun updateTodo(index: Int, newTitle: String, newDescription: String) {
+        _appViewModal.value = homeScreenState.value.copy(
+            toDoList = homeScreenState.value.toDoList.mapIndexed { i, todo ->
+                if (i == index) {
+                    todo.copy(title = newTitle, body = newDescription)
+                } else {
+                    todo
+                }
+            }
+        )
     }
 
     fun autoFileTodo(){
@@ -212,6 +226,81 @@ class HomeScreenViewModal(
         }
     }
 
+    fun deleteTodo(
+        onSuccess: () -> Unit = {},
+    ){
+        CoroutineScope(Dispatchers.IO).launch {
+            authRepository.deleteTodo(todoID = homeScreenState.value.selectedTodo?.toDoId ?: "")
+                .collectLatest {
+                    when(it){
+                        is Resource.Loading -> {
+                            _appViewModal.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+
+                        is Resource.Error -> {
+                            _appViewModal.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isError = true,
+                                )
+                            }
+                        }
+                        is Resource.Success -> {
+                            it.data?.enqueue(object : Callback<DeleteResponse> {
+                                override fun onResponse(
+                                    call: Call<DeleteResponse>,
+                                    response: Response<DeleteResponse>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        _appViewModal.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                isError = false,
+                                                selectedTodo = null,
+                                                title = "",
+                                                body = ""
+                                            )
+                                        }
+                                        onSuccess()
+                                        getUserToDo()
+                                    } else {
+                                        if (response.code() == 401) {
+                                            _appViewModal.update {
+                                                it.copy(
+                                                    isLoading = false,
+                                                    isError = true,
+                                                    errorMessage = parseError(response)
+                                                )
+                                            }
+                                        } else {
+                                            _appViewModal.update {
+                                                it.copy(
+                                                    isLoading = false,
+                                                    isError = true,
+                                                    errorMessage = parseError(response)
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<DeleteResponse>, t: Throwable) {
+                                    _appViewModal.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isError = true,
+//                                        errorMessage = parseError(response)
+                                        )
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+        }
+    }
 
     fun createTodo(
         onSuccess: () -> Unit = {},
