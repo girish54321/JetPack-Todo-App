@@ -34,7 +34,7 @@ class OAuthInterceptor(
 }
 
 class ErrorChecker(
-
+    private val perf: PerferenceDatastore = Graph.dataSource
 ): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
@@ -42,6 +42,9 @@ class ErrorChecker(
         // todo deal with the issues the way you need to
         if (response.code == 401) {
             //do something
+            runBlocking {
+                perf.removeToken()
+            }
             Log.e("Erro for 401","Kill the app")
             return response
         }
