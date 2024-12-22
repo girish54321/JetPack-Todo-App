@@ -93,7 +93,7 @@ fun CreateTodoScreen(
                         .padding(8.dp)
                 ) {
                     AppInputText(
-                        value = appViewModal.title,
+                        value = appViewModal.title ?: "",
                         label = "Title",
                         onValueChange = {
                             homeScreenViewModal.onTodoTitleChanged(it)
@@ -104,7 +104,7 @@ fun CreateTodoScreen(
                         modifier = Modifier.padding(top = 11.dp)
                     )
                     AppInputText(
-                        value = appViewModal.body,
+                        value = appViewModal.body ?: "",
                         label = "Body",
                         onValueChange = {
                             homeScreenViewModal.onTodoBodyChanged(it)
@@ -142,11 +142,3 @@ fun CreateTodoScreen(
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun SimpleComposablePreview() {
-//    val navController = rememberNavController()
-//    CreateTodoScreen(navController)
-//}
-

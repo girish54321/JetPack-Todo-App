@@ -55,7 +55,7 @@ data class HomeScreenDefaultState(
     val isError: Boolean = false,
     val errorMessage: ErrorMainBody? = null,
     val toDoList: List<Todo> = emptyList(),
-    val selectedTodo: Todo? = null,
+    var selectedTodo: Todo? = null,
 
     val title: String = "",
     val body: String = "",

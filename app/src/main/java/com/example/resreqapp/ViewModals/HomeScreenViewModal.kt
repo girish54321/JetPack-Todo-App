@@ -151,9 +151,9 @@ class HomeScreenViewModal(
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.updateTodo(
                 todoID = homeScreenState.value.selectedTodo?.toDoId ?: "",
-                title = homeScreenState.value.title,
-                body = homeScreenState.value.body,
-                state = homeScreenState.value.state
+                title = homeScreenState.value.title ?: "",
+                body = homeScreenState.value.body ?: "",
+                state = homeScreenState.value.state ?: ""
             ).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
@@ -307,9 +307,9 @@ class HomeScreenViewModal(
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.createToDo(
-                title = homeScreenState.value.title,
-                body = homeScreenState.value.body,
-                state = homeScreenState.value.state
+                title = homeScreenState.value.title ?: "",
+                body = homeScreenState.value.body ?: "",
+                state = homeScreenState.value.state ?: ""
             ).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
@@ -381,9 +381,7 @@ class HomeScreenViewModal(
             }
         }
     }
-
-
-    private fun getUserToDo() {
+    fun getUserToDo() {
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.getUserToDos(
             ).collectLatest {

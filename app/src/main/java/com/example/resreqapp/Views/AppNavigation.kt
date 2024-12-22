@@ -29,20 +29,19 @@ fun AppNavigation() {
             LoginScreen(authViewModal)
         }
         composable(Screen.MainScreen.rout) {
-            MainScreen(authViewModal, navController,todoScreenViewModal)
+            MainScreen(authViewModal, navController, todoScreenViewModal)
         }
-        composable(Screen.ToDoDetailsScreen.rout){
+        composable(Screen.ToDoDetailsScreen.rout) {
             SelectedToDoScreen(
                 todoScreenViewModal,
                 navController
             )
         }
-        composable(Screen.CreateTodoScreen.rout){
+        composable(Screen.CreateTodoScreen.rout) {
             CreateTodoScreen(
                 navController,
                 todoScreenViewModal
             )
         }
     }
-
 }

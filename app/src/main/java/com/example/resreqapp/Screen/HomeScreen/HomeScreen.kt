@@ -23,6 +23,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -58,11 +60,11 @@ fun HomeScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
-                actions = {
-                    IconButton(onClick = { todoScreenViewModal.updateTodo(0,"Local Title","Some Long Text") }) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add new Todo")
-                    }
-                },
+//                actions = {
+//                    IconButton(onClick = { todoScreenViewModal.updateTodo(0,"Local Title","Some Long Text") }) {
+//                        Icon(Icons.Filled.Add, contentDescription = "Add new Todo")
+//                    }
+//                },
                 title = {
                     Text(
                         "My Todo",
@@ -74,25 +76,31 @@ fun HomeScreen(
             )
         },
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(it)
+        PullToRefreshBox(
+            isRefreshing = appViewModalValue.isLoading,
+            onRefresh = {
+                todoScreenViewModal.getUserToDo()
+            },
+            modifier = Modifier.padding(it)
         ) {
-            items(appViewModalValue.toDoList.size) { index ->
-                val item = todoScreenViewModal.homeScreenState.value.toDoList[index]
-                ToDoItem(
-                    title = item.title ?: "",
-                    body = item.body ?: "",
-                    isChecked = true,
-                    onCheckedChange = {},
-                    onClick = {
-                        todoScreenViewModal.selectToDo(item)
-                        navController.navigate(Screen.ToDoDetailsScreen.rout)
-                    }
-                )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                items(appViewModalValue.toDoList.size) { index ->
+                    val item = todoScreenViewModal.homeScreenState.value.toDoList[index]
+                    ToDoItem(
+                        title = item.title ?: "",
+                        body = item.body ?: "",
+                        isChecked = true,
+                        onCheckedChange = {},
+                        onClick = {
+                            todoScreenViewModal.selectToDo(item)
+                            navController.navigate(Screen.ToDoDetailsScreen.rout)
+                        }
+                    )
+                }
             }
         }
-
     }
 }

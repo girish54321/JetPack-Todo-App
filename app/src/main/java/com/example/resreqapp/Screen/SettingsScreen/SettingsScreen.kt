@@ -40,6 +40,7 @@ fun SettingsScreen(
 ) {
     val settingViewModal = hiltViewModel<SettingsScreenViewModal>()
     val appViewModal = settingViewModal.settingScreenState.collectAsState().value
+
     Scaffold(
         topBar = {
             LargeTopAppBar(
