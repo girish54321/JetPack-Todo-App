@@ -37,6 +37,8 @@ object Graph {
         HomeScreenRepositoryImp(api)
     }
 
+
+
     fun createErrorChecker(){
 //        val okHttpClient: OkHttpClient = HexFormat.Builder()
 ////            .addInterceptor(object : Interceptor() {

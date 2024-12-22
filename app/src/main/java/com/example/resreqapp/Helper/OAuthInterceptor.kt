@@ -23,7 +23,7 @@ class OAuthInterceptor(
 
         if (token != null) {
             val request = originalRequest.newBuilder()
-                .header("Authorization", "Bearer ")
+                .header("Authorization", "Bearer $token")
                 .build()
             return chain.proceed(request)
         } else {
@@ -39,7 +39,6 @@ class ErrorChecker(
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         val response = chain.proceed(originalRequest)
-
         // todo deal with the issues the way you need to
         if (response.code == 401) {
             //do something
