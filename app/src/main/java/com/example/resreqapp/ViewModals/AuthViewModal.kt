@@ -137,7 +137,6 @@ class AuthViewModal(
     private fun getToken(){
         CoroutineScope(Dispatchers.IO).launch {
             val token = perf.getToken().firstOrNull()
-            token?.toString()?.let { Log.e("DO WE HAVE ERRPR", it) }
             if(token != ""){
                 _appViewModal.update {
                     it.copy(
@@ -151,6 +150,14 @@ class AuthViewModal(
                     )
                 }
             }
+        }
+    }
+
+    fun logoutUser(){
+        _appViewModal.update {
+            it.copy(
+                isLoggedIn = false
+            )
         }
     }
 

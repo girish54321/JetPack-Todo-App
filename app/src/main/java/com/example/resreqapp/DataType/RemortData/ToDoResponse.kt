@@ -1,6 +1,5 @@
 package com.example.resreqapp.DataType.RemortData
 
-import com.google.gson.annotations.SerializedName
 
 data class ToDoResponse (
     val totalPages: Long? = null,
@@ -15,7 +14,6 @@ data class ToDoInfo (
 )
 
 data class Todo (
-//    @SerializedName("toDoid" )
     val toDoId: String? = null,
     val title: String? = null,
     val body: String? = null,

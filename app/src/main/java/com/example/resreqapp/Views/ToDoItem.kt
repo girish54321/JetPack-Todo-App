@@ -45,10 +45,10 @@ fun ToDoItem(
                 overflow = TextOverflow.Ellipsis
             )
         }
-        Checkbox(
-            checked = isChecked,
-            onCheckedChange = onCheckedChange
-        )
+//        Checkbox(
+//            checked = isChecked,
+//            onCheckedChange = onCheckedChange
+//        )
     }
 }
 

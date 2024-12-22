@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.example.resreqapp.Helper.Screen
+import com.example.resreqapp.ViewModals.AuthViewModal
 import com.example.resreqapp.ViewModals.HomeScreenViewModal
 import com.example.resreqapp.Views.AppBackButton
 import com.example.resreqapp.Views.ToDoItem
@@ -43,8 +44,8 @@ import com.example.resreqapp.Views.ToDoItem
 fun HomeScreen(
     navController: NavHostController,
     paddingValues: PaddingValues,
-    todoScreenViewModal: HomeScreenViewModal
-) {
+    todoScreenViewModal: HomeScreenViewModal,
+    ) {
     val appViewModalValue = todoScreenViewModal.homeScreenState.collectAsState().value
 
     val scrollBehavior =

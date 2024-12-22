@@ -353,7 +353,6 @@ class HomeScreenViewModal(
     }
 
     fun selectToDo(item: Todo) {
-        Log.e("SlelectToDo",item.toString())
         _appViewModal.update {
             it.copy(
                 selectedTodo = item

@@ -23,7 +23,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SettingsScreenViewModal (
+class SettingsScreenViewModal(
     private val perf: PerferenceDatastore = Graph.dataSource,
 ) : ViewModel() {
     private val _appViewModal = MutableStateFlow(SettingsScreenDefaultState())
@@ -35,7 +35,9 @@ class SettingsScreenViewModal (
         }
     }
 
-    fun logout() {
+    fun logout(
+        onSuccess: () -> Unit = {},
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             perf.removeToken()
 //            appViewModal.update {
@@ -45,6 +47,7 @@ class SettingsScreenViewModal (
 //            }
         }
         closeLogoutModal()
+        onSuccess()
         // navigate to login screen or reset state to default state (clear all user data)
         // for example:
         // _appViewModal.update { it.copy(userEmail = null, userPassword = null) }

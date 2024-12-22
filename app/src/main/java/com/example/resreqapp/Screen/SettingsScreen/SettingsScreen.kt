@@ -36,6 +36,7 @@ import com.example.resreqapp.Views.ToDoItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    authViewModal: AuthViewModal,
 ) {
     val settingViewModal = hiltViewModel<SettingsScreenViewModal>()
     val appViewModal = settingViewModal.settingScreenState.collectAsState().value
@@ -72,7 +73,9 @@ fun SettingsScreen(
                     },
                     confirmButton = {
                         TextButton(onClick = {
-                            settingViewModal.logout()
+                            settingViewModal.logout {
+                                authViewModal.logoutUser()
+                            }
                         }) { Text("Yes") }
                     },
                     dismissButton = {
@@ -100,11 +103,3 @@ fun SettingsScreen(
     }
 }
 
-@Preview
-@Composable
-fun SimpleComposablePreview() {
-    SettingsScreen()
-}
-
-//@Preview
-//fun HomeScreen();
