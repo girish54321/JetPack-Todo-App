@@ -83,7 +83,9 @@ class HomeScreenViewModal(
                 when(it){
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true)
+                            it.copy(isLoading = true,
+                                errorMessage = null
+                            )
                         }
                     }
 
@@ -91,7 +93,6 @@ class HomeScreenViewModal(
                         _appViewModal.update {
                             it.copy(
                                 isLoading = false,
-                                isError = true,
                             )
                         }
                     }
@@ -104,7 +105,8 @@ class HomeScreenViewModal(
                                 if (response.isSuccessful) {
                                     _appViewModal.update {
                                         it.copy(
-                                           selectedTodo = response.body()?.todo
+                                           selectedTodo = response.body()?.todo,
+                                            errorMessage = null
                                         )
                                     }
                                     getUserToDo()
@@ -113,7 +115,6 @@ class HomeScreenViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                isError = true,
                                                 errorMessage = parseError(response)
                                             )
                                         }
@@ -121,7 +122,6 @@ class HomeScreenViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                isError = true,
                                                 errorMessage = parseError(response)
                                             )
                                         }
@@ -133,7 +133,6 @@ class HomeScreenViewModal(
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,
-                                        isError = true,
 //                                        errorMessage = parseError(response)
                                     )
                                 }
@@ -158,7 +157,9 @@ class HomeScreenViewModal(
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true)
+                            it.copy(isLoading = true,
+                                errorMessage = null
+                                )
                         }
                     }
 
@@ -166,7 +167,6 @@ class HomeScreenViewModal(
                         _appViewModal.update {
                             it.copy(
                                 isLoading = false,
-                                isError = true,
                             )
                         }
                     }
@@ -181,9 +181,10 @@ class HomeScreenViewModal(
                                     _appViewModal.update {
                                         it.copy(
                                             isLoading = false,
-                                            isError = false,
                                             title = "",
                                             body = "",
+                                            errorMessage = null
+
                                         )
                                     }
                                     onSuccess()
@@ -194,7 +195,6 @@ class HomeScreenViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                isError = true,
                                                 errorMessage = parseError(response)
                                             )
                                         }
@@ -202,7 +202,6 @@ class HomeScreenViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                isError = true,
                                                 errorMessage = parseError(response)
                                             )
                                         }
@@ -214,7 +213,6 @@ class HomeScreenViewModal(
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,
-                                        isError = true,
 //                                        errorMessage = parseError(response)
                                     )
                                 }
@@ -235,7 +233,9 @@ class HomeScreenViewModal(
                     when(it){
                         is Resource.Loading -> {
                             _appViewModal.update {
-                                it.copy(isLoading = true)
+                                it.copy(isLoading = true,
+                                    errorMessage = null
+                                    )
                             }
                         }
 
@@ -243,7 +243,6 @@ class HomeScreenViewModal(
                             _appViewModal.update {
                                 it.copy(
                                     isLoading = false,
-                                    isError = true,
                                 )
                             }
                         }
@@ -257,10 +256,11 @@ class HomeScreenViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                isError = false,
                                                 selectedTodo = null,
                                                 title = "",
-                                                body = ""
+                                                body = "",
+                                                errorMessage = null
+
                                             )
                                         }
                                         onSuccess()
@@ -270,7 +270,6 @@ class HomeScreenViewModal(
                                             _appViewModal.update {
                                                 it.copy(
                                                     isLoading = false,
-                                                    isError = true,
                                                     errorMessage = parseError(response)
                                                 )
                                             }
@@ -278,7 +277,6 @@ class HomeScreenViewModal(
                                             _appViewModal.update {
                                                 it.copy(
                                                     isLoading = false,
-                                                    isError = true,
                                                     errorMessage = parseError(response)
                                                 )
                                             }
@@ -290,7 +288,6 @@ class HomeScreenViewModal(
                                     _appViewModal.update {
                                         it.copy(
                                             isLoading = false,
-                                            isError = true,
 //                                        errorMessage = parseError(response)
                                         )
                                     }
@@ -314,7 +311,9 @@ class HomeScreenViewModal(
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true)
+                            it.copy(isLoading = true,
+                                errorMessage = null
+                                )
                         }
                     }
 
@@ -322,7 +321,6 @@ class HomeScreenViewModal(
                         _appViewModal.update {
                             it.copy(
                                 isLoading = false,
-                                isError = true,
                             )
                         }
                     }
@@ -337,9 +335,9 @@ class HomeScreenViewModal(
                                     _appViewModal.update {
                                         it.copy(
                                             isLoading = false,
-                                            isError = false,
                                             selectedTodo = null,
                                             title = "",
+                                            errorMessage = null,
                                             body = ""
                                         )
                                     }
@@ -350,7 +348,6 @@ class HomeScreenViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                isError = true,
                                                 errorMessage = parseError(response)
                                             )
                                         }
@@ -358,7 +355,6 @@ class HomeScreenViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                isError = true,
                                                 errorMessage = parseError(response)
                                             )
                                         }
@@ -370,7 +366,6 @@ class HomeScreenViewModal(
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,
-                                        isError = true,
 //                                        errorMessage = parseError(response)
                                     )
                                 }
@@ -388,7 +383,9 @@ class HomeScreenViewModal(
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true)
+                            it.copy(isLoading = true,
+                                errorMessage = null
+                                )
                         }
                     }
 
@@ -403,23 +400,24 @@ class HomeScreenViewModal(
                                         response.body()?.todo?.let { it1 ->
                                             it.copy(
                                                 isLoading = false,
-                                                toDoList = it1
+                                                toDoList = it1,
+                                                errorMessage = null
+
                                             )
                                         }!!
                                     }
                                 } else {
-                                    if (response.code() == 401) {
-                                        _appViewModal.update {
-                                            it.copy(
-                                                isLoading = false,
-                                                errorMessage = parseError(response)
-                                            )
-                                        }
+                                    _appViewModal.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            errorMessage = parseError(response)
+                                        )
                                     }
                                 }
                             }
 
                             override fun onFailure(call: Call<ToDoResponse>, t: Throwable) {
+                                Log.e("OH ERROR", "Oh Error")
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,

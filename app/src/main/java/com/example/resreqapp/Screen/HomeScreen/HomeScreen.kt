@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
 import com.example.resreqapp.Helper.Screen
 import com.example.resreqapp.ViewModals.HomeScreenViewModal
+import com.example.resreqapp.Views.ErrorScreen
 import com.example.resreqapp.Views.ToDoItem
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -30,7 +33,7 @@ fun HomeScreen(
     navController: NavHostController,
     paddingValues: PaddingValues,
     todoScreenViewModal: HomeScreenViewModal,
-    ) {
+) {
     val appViewModalValue = todoScreenViewModal.homeScreenState.collectAsState().value
 
     val scrollBehavior =
@@ -40,9 +43,9 @@ fun HomeScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
+//                colors = TopAppBarDefaults.topAppBarColors(
+//                    titleContentColor = MaterialTheme.colorScheme.primary,
+//                ),
 //                actions = {
 //                    IconButton(onClick = { todoScreenViewModal.updateTodo(0,"Local Title","Some Long Text") }) {
 //                        Icon(Icons.Filled.Add, contentDescription = "Add new Todo")
@@ -59,29 +62,40 @@ fun HomeScreen(
             )
         },
     ) {
-        PullToRefreshBox(
-            isRefreshing = appViewModalValue.isLoading,
-            onRefresh = {
-                todoScreenViewModal.getUserToDo()
-            },
-            modifier = Modifier.padding(it)
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
+        if (appViewModalValue.errorMessage != null) {
+            ErrorScreen(
+                errorIcon = Icons.Default.Warning,
+                errorTitle = appViewModalValue.errorMessage.error?.status.toString(),
+                errorMessage = appViewModalValue.errorMessage.error?.message,
+                onRetry = {
+                    todoScreenViewModal.getUserToDo()
+                }
+            )
+        } else {
+            PullToRefreshBox(
+                isRefreshing = appViewModalValue.isLoading,
+                onRefresh = {
+                    todoScreenViewModal.getUserToDo()
+                },
+                modifier = Modifier.padding(it)
             ) {
-                items(appViewModalValue.toDoList.size) { index ->
-                    val item = todoScreenViewModal.homeScreenState.value.toDoList[index]
-                    ToDoItem(
-                        title = item.title ?: "",
-                        body = item.body ?: "",
-                        isChecked = true,
-                        onCheckedChange = {},
-                        onClick = {
-                            todoScreenViewModal.selectToDo(item)
-                            navController.navigate(Screen.ToDoDetailsScreen.rout)
-                        }
-                    )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    items(appViewModalValue.toDoList.size) { index ->
+                        val item = todoScreenViewModal.homeScreenState.value.toDoList[index]
+                        ToDoItem(
+                            title = item.title ?: "",
+                            body = item.body ?: "",
+                            isChecked = true,
+                            onCheckedChange = {},
+                            onClick = {
+                                todoScreenViewModal.selectToDo(item)
+                                navController.navigate(Screen.ToDoDetailsScreen.rout)
+                            }
+                        )
+                    }
                 }
             }
         }

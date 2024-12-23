@@ -52,7 +52,6 @@ data class AuthDefaultState(
 
 data class HomeScreenDefaultState(
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
     val errorMessage: ErrorMainBody? = null,
     val toDoList: List<Todo> = emptyList(),
     var selectedTodo: Todo? = null,
