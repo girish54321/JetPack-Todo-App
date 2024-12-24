@@ -1,6 +1,7 @@
 package com.example.resreqapp.Screen.HomeScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,10 +17,20 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.example.resreqapp.Helper.Screen
 import com.example.resreqapp.ViewModals.HomeScreenViewModal
@@ -35,6 +46,14 @@ fun HomeScreen(
     todoScreenViewModal: HomeScreenViewModal,
 ) {
     val appViewModalValue = todoScreenViewModal.homeScreenState.collectAsState().value
+    var hasRun by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (!hasRun) {
+               todoScreenViewModal.getUserToDo()
+               hasRun = true
+        }
+    }
 
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())

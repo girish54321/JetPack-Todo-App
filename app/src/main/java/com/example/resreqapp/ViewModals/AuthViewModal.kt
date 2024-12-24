@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.mytodoandroid.helper.Resource
 import com.example.resreqapp.DataType.RemortData.LoginResRemote
+import com.example.resreqapp.DataType.RemortData.createThrowableError
 import com.example.resreqapp.DataType.RemortData.parseError
 import com.example.resreqapp.Domain.Repository.AuthRepository
 import com.example.resreqapp.Graph
@@ -113,7 +114,7 @@ class AuthViewModal(
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,
-                                        errorMessage = errorHelper(message = "API onFailure: ${t.message}"),
+                                        errorMessage = createThrowableError(t)
                                     )
                                 }
                             }

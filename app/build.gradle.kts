@@ -96,7 +96,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
-    val nav_version = "2.7.7"
+    val nav_version = "2.8.0-beta02"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
 

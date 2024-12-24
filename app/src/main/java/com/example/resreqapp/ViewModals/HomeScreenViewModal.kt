@@ -7,13 +7,17 @@ import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.lifecycle.ViewModel
 import com.example.mytodoandroid.helper.Resource
 import com.example.resreqapp.DataType.RemortData.DeleteResponse
+import com.example.resreqapp.DataType.RemortData.ErrorBody
+import com.example.resreqapp.DataType.RemortData.ErrorMainBody
 import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
 import com.example.resreqapp.DataType.RemortData.Todo
+import com.example.resreqapp.DataType.RemortData.createThrowableError
 import com.example.resreqapp.DataType.RemortData.parseError
 import com.example.resreqapp.Domain.Repository.HomeScreenRepository
 import com.example.resreqapp.Graph
+import com.example.resreqapp.Helper.errorHelper
 import hoods.com.quotesyt.utils.PerferenceDatastore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +36,6 @@ class HomeScreenViewModal(
 ) : ViewModel() {
     private val _appViewModal = MutableStateFlow(HomeScreenDefaultState())
     val homeScreenState = _appViewModal.asStateFlow()
-
-    init {
-        getUserToDo()
-    }
 
     //TODO: try this
     fun updateTodo(index: Int, newTitle: String, newDescription: String) {
@@ -133,7 +133,7 @@ class HomeScreenViewModal(
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,
-//                                        errorMessage = parseError(response)
+                                        errorMessage = createThrowableError(t)
                                     )
                                 }
                             }
@@ -213,7 +213,7 @@ class HomeScreenViewModal(
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,
-//                                        errorMessage = parseError(response)
+                                        errorMessage = createThrowableError(t)
                                     )
                                 }
                             }
@@ -288,7 +288,7 @@ class HomeScreenViewModal(
                                     _appViewModal.update {
                                         it.copy(
                                             isLoading = false,
-//                                        errorMessage = parseError(response)
+                                            errorMessage = createThrowableError(t)
                                         )
                                     }
                                 }
@@ -366,7 +366,7 @@ class HomeScreenViewModal(
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,
-//                                        errorMessage = parseError(response)
+                                        errorMessage = createThrowableError(t)
                                     )
                                 }
                             }
@@ -421,7 +421,7 @@ class HomeScreenViewModal(
                                 _appViewModal.update {
                                     it.copy(
                                         isLoading = false,
-//                                      errorMessage = parseError(t.message)
+                                        errorMessage = createThrowableError(t)
                                     )
 
                                 }

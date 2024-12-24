@@ -47,3 +47,7 @@ fun parseError(response: Response<*>): ErrorMainBody? {
         null
     }
 }
+
+fun createThrowableError(error:Throwable): ErrorMainBody {
+    return ErrorMainBody(error = ErrorBody(status = 999, message = error.message))
+}
