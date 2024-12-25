@@ -1,5 +1,8 @@
 package com.example.resreqapp.Repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.mytodoandroid.helper.Resource
 import com.example.resreqapp.API.AppApi
 import com.example.resreqapp.DataType.RemortData.CreateTodoRequestBody
@@ -8,8 +11,10 @@ import com.example.resreqapp.DataType.RemortData.LoginPostBody
 import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
+import com.example.resreqapp.DataType.RemortData.Todo
 import com.example.resreqapp.Domain.Repository.HomeScreenRepository
 import com.example.resreqapp.Helper.errorHelper
+import hoods.com.quotesyt.data.pagination.ToDoPageingSoures
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Call
@@ -20,12 +25,13 @@ import java.io.IOException
 class HomeScreenRepositoryImp(
     private val api: AppApi
 ) : HomeScreenRepository {
+    private var currentPagingSource: PagingSource<Int, Todo>? = null
     override suspend fun getUserToDos(): Flow<Resource<Call<ToDoResponse>>> {
         return flow {
             emit(Resource.Loading())
             try {
-                val response = api.getUserToDoApi()
-                emit(Resource.Success(response))
+                val response = api.getUserToDoApi(1)
+//                emit(Resource.Success(response))
             } catch (e: IOException) {
                 e.printStackTrace()
                 emit(Resource.Error(errorObj = errorHelper(message = e.toString())))
@@ -40,6 +46,18 @@ class HomeScreenRepositoryImp(
                 return@flow
             }
         }
+    }
+
+    override  fun getUserToDoPage(): Flow<PagingData<Todo>> {
+        return  Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+            ),
+            pagingSourceFactory = {
+                ToDoPageingSoures(api)
+            }
+        ).flow
     }
 
     override suspend fun createToDo(

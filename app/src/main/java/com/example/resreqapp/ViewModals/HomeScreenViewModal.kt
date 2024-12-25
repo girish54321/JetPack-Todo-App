@@ -5,6 +5,9 @@ import HomeScreenDefaultState
 import android.util.Log
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.mytodoandroid.helper.Resource
 import com.example.resreqapp.DataType.RemortData.DeleteResponse
 import com.example.resreqapp.DataType.RemortData.ErrorBody
@@ -21,6 +24,7 @@ import com.example.resreqapp.Helper.errorHelper
 import hoods.com.quotesyt.utils.PerferenceDatastore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -36,6 +40,8 @@ class HomeScreenViewModal(
 ) : ViewModel() {
     private val _appViewModal = MutableStateFlow(HomeScreenDefaultState())
     val homeScreenState = _appViewModal.asStateFlow()
+
+    val useTodoPageData: Flow<PagingData<Todo>> = authRepository.getUserToDoPage().cachedIn(viewModelScope)
 
     //TODO: try this
     fun updateTodo(index: Int, newTitle: String, newDescription: String) {
@@ -109,7 +115,7 @@ class HomeScreenViewModal(
                                             errorMessage = null
                                         )
                                     }
-                                    getUserToDo()
+//                                    getUserToDo()
                                 } else {
                                     if (response.code() == 401) {
                                         _appViewModal.update {
@@ -188,7 +194,7 @@ class HomeScreenViewModal(
                                         )
                                     }
                                     onSuccess()
-                                    getUserToDo()
+//                                    getUserToDo()
                                     getSelectedTodoInfo()
                                 } else {
                                     if (response.code() == 401) {
@@ -264,7 +270,7 @@ class HomeScreenViewModal(
                                             )
                                         }
                                         onSuccess()
-                                        getUserToDo()
+//                                        getUserToDo()
                                     } else {
                                         if (response.code() == 401) {
                                             _appViewModal.update {
@@ -342,7 +348,7 @@ class HomeScreenViewModal(
                                         )
                                     }
                                     onSuccess()
-                                    getUserToDo()
+//                                    getUserToDo()
                                 } else {
                                     if (response.code() == 401) {
                                         _appViewModal.update {
@@ -376,7 +382,7 @@ class HomeScreenViewModal(
             }
         }
     }
-    fun getUserToDo() {
+    fun getUserToDoFun() {
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.getUserToDos(
             ).collectLatest {

@@ -2,10 +2,10 @@ package com.example.resreqapp.DataType.RemortData
 
 
 data class ToDoResponse (
-    val totalPages: Long? = null,
+    val totalPages: Int? = null,
     val total: Long? = null,
     val perPage: Long? = null,
-    val page: Long? = null,
+    val page: Int? = null,
     val todo: List<Todo>? = null
 )
 
@@ -20,8 +20,13 @@ data class Todo (
     val state: String? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null,
-    val userid: String? = null
+    val userid: String? = null,
+    val currentPage: Int
 )
+
+fun Todo.toPageingTodo(currentPage: Int): Todo {
+    return Todo(toDoId, title,body, state,createdAt,updatedAt,userid,currentPage)
+}
 
 data class SuccessResponse (
    val success: Boolean? = null,

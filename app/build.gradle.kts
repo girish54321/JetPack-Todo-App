@@ -99,8 +99,12 @@ dependencies {
     val nav_version = "2.8.0-beta02"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
-
     implementation ("androidx.datastore:datastore-preferences:1.1.1")
+
+    //Paging3
+    val paging_version = "3.2.1"
+    implementation("androidx.paging:paging-compose:$paging_version")
+    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
 
     // For Proto DataStore
     implementation("androidx.datastore:datastore-core:1.1.1")
