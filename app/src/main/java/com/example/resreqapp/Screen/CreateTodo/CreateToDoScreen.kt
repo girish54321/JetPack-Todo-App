@@ -123,10 +123,12 @@ fun CreateTodoScreen(
                 onClick = {
                     if(isUpdate){
                         homeScreenViewModal.updateTodo(onSuccess = {
+                            homeScreenViewModal.hardReload()
                             navController.popBackStack()
                         })
                     } else {
                         homeScreenViewModal.createTodo(onSuccess = {
+                            homeScreenViewModal.hardReload()
                             navController.popBackStack()
                         })
                     }

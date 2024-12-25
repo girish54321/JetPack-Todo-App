@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,7 +51,7 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         if (!hasRun) {
-               todoScreenViewModal.getUserToDo()
+               todoScreenViewModal.hardReload()
                hasRun = true
         }
     }
@@ -87,14 +88,14 @@ fun HomeScreen(
                 errorTitle = appViewModalValue.errorMessage.error?.status.toString(),
                 errorMessage = appViewModalValue.errorMessage.error?.message,
                 onRetry = {
-                    todoScreenViewModal.getUserToDo()
+                    todoScreenViewModal.hardReload()
                 }
             )
         } else {
             PullToRefreshBox(
                 isRefreshing = appViewModalValue.isLoading,
                 onRefresh = {
-                    todoScreenViewModal.getUserToDo()
+                    todoScreenViewModal.hardReload()
                 },
                 modifier = Modifier.padding(it)
             ) {
@@ -102,18 +103,28 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    items(appViewModalValue.toDoList.size) { index ->
-                        val item = todoScreenViewModal.homeScreenState.value.toDoList[index]
-                        ToDoItem(
-                            title = item.title ?: "",
-                            body = item.body ?: "",
-                            isChecked = true,
-                            onCheckedChange = {},
-                            onClick = {
-                                todoScreenViewModal.selectToDo(item)
-                                navController.navigate(Screen.ToDoDetailsScreen.rout)
+                    items(appViewModalValue.toDoList.size + 1) { index ->
+                        if (index == appViewModalValue.toDoList.size) {
+                            LaunchedEffect(true) {
+                                //Do something when List end has been reached
+                                if(!appViewModalValue.isLoading) {
+                                    Log.e("On End", "On End Call Api")
+                                    todoScreenViewModal.getUserToDo()
+                                }
                             }
-                        )
+                        } else {
+                            val item = todoScreenViewModal.homeScreenState.value.toDoList[index]
+                            ToDoItem(
+                                title = item.title ?: "",
+                                body = item.body ?: "",
+                                isChecked = true,
+                                onCheckedChange = {},
+                                onClick = {
+                                    todoScreenViewModal.selectToDo(item)
+                                    navController.navigate(Screen.ToDoDetailsScreen.rout)
+                                }
+                            )
+                        }
                     }
                 }
             }

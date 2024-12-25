@@ -2,7 +2,7 @@ package com.example.resreqapp.DataType.RemortData
 
 
 data class ToDoResponse (
-    val totalPages: Long? = null,
+    val totalPages: Int? = null,
     val total: Long? = null,
     val perPage: Long? = null,
     val page: Long? = null,

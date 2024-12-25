@@ -14,6 +14,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface AppApi {
     @POST("auth/login")
@@ -23,6 +24,12 @@ interface AppApi {
 
     @GET("/api/v1/todo/getalltodos")
     fun getUserToDoApi(): Call<ToDoResponse>
+
+    @GET("/api/v1/todo/getalltodos")
+    fun getToDo(
+        @Query("page") page: Int,
+        @Query("size") perPage: Int = 10,
+    ): Call<ToDoResponse>
 
     @POST("/api/v1/todo/addtodo")
     fun createToDo(

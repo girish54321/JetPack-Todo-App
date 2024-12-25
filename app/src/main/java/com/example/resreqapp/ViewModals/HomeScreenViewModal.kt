@@ -2,6 +2,7 @@ package com.example.resreqapp.ViewModals
 
 import AuthDefaultState
 import HomeScreenDefaultState
+import android.os.Handler
 import android.util.Log
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.lifecycle.ViewModel
@@ -37,7 +38,7 @@ class HomeScreenViewModal(
     private val _appViewModal = MutableStateFlow(HomeScreenDefaultState())
     val homeScreenState = _appViewModal.asStateFlow()
 
-    //TODO: try this
+    //TODO: update item on Index
     fun updateTodo(index: Int, newTitle: String, newDescription: String) {
         _appViewModal.value = homeScreenState.value.copy(
             toDoList = homeScreenState.value.toDoList.mapIndexed { i, todo ->
@@ -50,7 +51,7 @@ class HomeScreenViewModal(
         )
     }
 
-    fun autoFileTodo(){
+    fun autoFileTodo() {
         _appViewModal.update {
             it.copy(
                 title = homeScreenState.value.selectedTodo?.title ?: "",
@@ -72,18 +73,19 @@ class HomeScreenViewModal(
         }
     }
 
-    fun getSelectedTodoInfo () {
-        if(_appViewModal.value.selectedTodo == null){
+    fun getSelectedTodoInfo() {
+        if (_appViewModal.value.selectedTodo == null) {
             return
         }
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.getTodoInfo(
-                todoID = homeScreenState.value.selectedTodo?.toDoId?: ""
+                todoID = homeScreenState.value.selectedTodo?.toDoId ?: ""
             ).collectLatest {
-                when(it){
+                when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true,
+                            it.copy(
+                                isLoading = true,
                                 errorMessage = null
                             )
                         }
@@ -96,6 +98,7 @@ class HomeScreenViewModal(
                             )
                         }
                     }
+
                     is Resource.Success -> {
                         it.data?.enqueue(object : Callback<ToDoInfo> {
                             override fun onResponse(
@@ -105,11 +108,11 @@ class HomeScreenViewModal(
                                 if (response.isSuccessful) {
                                     _appViewModal.update {
                                         it.copy(
-                                           selectedTodo = response.body()?.todo,
+                                            selectedTodo = response.body()?.todo,
                                             errorMessage = null
                                         )
                                     }
-                                    getUserToDo()
+                                    hardReload()
                                 } else {
                                     if (response.code() == 401) {
                                         _appViewModal.update {
@@ -157,9 +160,10 @@ class HomeScreenViewModal(
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true,
+                            it.copy(
+                                isLoading = true,
                                 errorMessage = null
-                                )
+                            )
                         }
                     }
 
@@ -188,7 +192,6 @@ class HomeScreenViewModal(
                                         )
                                     }
                                     onSuccess()
-                                    getUserToDo()
                                     getSelectedTodoInfo()
                                 } else {
                                     if (response.code() == 401) {
@@ -226,16 +229,17 @@ class HomeScreenViewModal(
 
     fun deleteTodo(
         onSuccess: () -> Unit = {},
-    ){
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.deleteTodo(todoID = homeScreenState.value.selectedTodo?.toDoId ?: "")
                 .collectLatest {
-                    when(it){
+                    when (it) {
                         is Resource.Loading -> {
                             _appViewModal.update {
-                                it.copy(isLoading = true,
+                                it.copy(
+                                    isLoading = true,
                                     errorMessage = null
-                                    )
+                                )
                             }
                         }
 
@@ -246,6 +250,7 @@ class HomeScreenViewModal(
                                 )
                             }
                         }
+
                         is Resource.Success -> {
                             it.data?.enqueue(object : Callback<DeleteResponse> {
                                 override fun onResponse(
@@ -264,7 +269,6 @@ class HomeScreenViewModal(
                                             )
                                         }
                                         onSuccess()
-                                        getUserToDo()
                                     } else {
                                         if (response.code() == 401) {
                                             _appViewModal.update {
@@ -311,9 +315,10 @@ class HomeScreenViewModal(
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true,
+                            it.copy(
+                                isLoading = true,
                                 errorMessage = null
-                                )
+                            )
                         }
                     }
 
@@ -342,7 +347,6 @@ class HomeScreenViewModal(
                                         )
                                     }
                                     onSuccess()
-                                    getUserToDo()
                                 } else {
                                     if (response.code() == 401) {
                                         _appViewModal.update {
@@ -376,16 +380,31 @@ class HomeScreenViewModal(
             }
         }
     }
+
+    fun hardReload() {
+        _appViewModal.update {
+            it.copy(
+                isLoading = true,
+                errorMessage = null,
+                toDoList = emptyList(),
+                toDoListCurrentPage = 1
+            )
+        }
+        getUserToDo()
+    }
+
     fun getUserToDo() {
         CoroutineScope(Dispatchers.IO).launch {
-            authRepository.getUserToDos(
+            authRepository.getToDo(
+                page =  _appViewModal.value.toDoListCurrentPage
             ).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true,
+                            it.copy(
+                                isLoading = true,
                                 errorMessage = null
-                                )
+                            )
                         }
                     }
 
@@ -396,15 +415,25 @@ class HomeScreenViewModal(
                                 response: Response<ToDoResponse>
                             ) {
                                 if (response.isSuccessful) {
+                                    val totalPages = response.body()!!.totalPages
+                                    val cruuetPage = _appViewModal.value.toDoListCurrentPage
+                                    var newPageNumber = 0
+                                    if (totalPages != null) {
+                                        if (totalPages > cruuetPage) {
+                                           newPageNumber++
+                                        }
+                                    }
                                     _appViewModal.update {
-                                        response.body()?.todo?.let { it1 ->
+                                        response.body()?.todo?.let { newTodos ->
                                             it.copy(
                                                 isLoading = false,
-                                                toDoList = it1,
-                                                errorMessage = null
-
+                                                toDoList = it.toDoList + newTodos,
+                                                errorMessage = null,
+                                                toDoListCurrentPage = newPageNumber
                                             )
-                                        }!!
+                                        } ?: it.copy(
+                                            isLoading = false,
+                                        )
                                     }
                                 } else {
                                     _appViewModal.update {

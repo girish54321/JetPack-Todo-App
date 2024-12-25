@@ -12,7 +12,8 @@ import java.io.File
 
 
 interface HomeScreenRepository {
-    suspend fun getUserToDos(): Flow<Resource<Call<ToDoResponse>>>
+//    suspend fun getUserToDos(): Flow<Resource<Call<ToDoResponse>>>
+    suspend fun getToDo(page:Int): Flow<Resource<Call<ToDoResponse>>>
     suspend fun createToDo(title: String, body: String,state: String): Flow<Resource<Call<SuccessResponse>>>
     suspend fun updateTodo(todoID: String, title: String, body: String,state: String): Flow<Resource<Call<SuccessResponse>>>
     suspend fun getTodoInfo(todoID: String): Flow<Resource<Call<ToDoInfo>>>

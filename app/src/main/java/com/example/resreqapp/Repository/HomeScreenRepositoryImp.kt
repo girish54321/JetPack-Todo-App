@@ -20,11 +20,33 @@ import java.io.IOException
 class HomeScreenRepositoryImp(
     private val api: AppApi
 ) : HomeScreenRepository {
-    override suspend fun getUserToDos(): Flow<Resource<Call<ToDoResponse>>> {
+//    override suspend fun getUserToDos(): Flow<Resource<Call<ToDoResponse>>> {
+//        return flow {
+//            emit(Resource.Loading())
+//            try {
+//                val response = api.getUserToDoApi()
+//                emit(Resource.Success(response))
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//                emit(Resource.Error(errorObj = errorHelper(message = e.toString())))
+//                return@flow
+//            } catch (e: HttpException) {
+//                e.printStackTrace()
+//                emit(Resource.Error(errorObj = errorHelper(message = e.toString())))
+//                return@flow
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                emit(Resource.Error(errorObj = errorHelper(message = e.toString())))
+//                return@flow
+//            }
+//        }
+//    }
+
+    override suspend fun getToDo(page:Int): Flow<Resource<Call<ToDoResponse>>> {
         return flow {
             emit(Resource.Loading())
             try {
-                val response = api.getUserToDoApi()
+                val response = api.getToDo(page,5)
                 emit(Resource.Success(response))
             } catch (e: IOException) {
                 e.printStackTrace()
