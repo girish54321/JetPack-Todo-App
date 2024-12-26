@@ -3,6 +3,7 @@ package com.example.resreqapp.Repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import com.example.mytodoandroid.helper.Resource
 import com.example.resreqapp.API.AppApi
 import com.example.resreqapp.DataType.RemortData.CreateTodoRequestBody
@@ -88,19 +89,16 @@ class HomeScreenRepositoryImp(
     }
 
     override suspend fun updateTodo(
-        todoID: String,
-        title: String,
-        body: String,
-        state: String
+       updateObj:Todo
     ): Flow<Resource<Call<SuccessResponse>>> {
         return flow {
             emit(Resource.Loading())
             try {
                 val postData = CreateTodoRequestBody(
-                    toDoId = todoID,
-                    title = title,
-                    body = body,
-                    state = state
+                    toDoId = updateObj.toDoId ?: "1",
+                    title = updateObj.title ?: "",
+                    body = updateObj.body ?: "",
+                    state = updateObj.state ?: "",
                 )
                 val response = api.updateTodo(postData)
                 emit(Resource.Success(response))

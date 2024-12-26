@@ -41,7 +41,8 @@ class HomeScreenViewModal(
     private val _appViewModal = MutableStateFlow(HomeScreenDefaultState())
     val homeScreenState = _appViewModal.asStateFlow()
 
-    val useTodoPageData: Flow<PagingData<Todo>> = authRepository.getUserToDoPage().cachedIn(viewModelScope)
+    val useTodoPageData: Flow<PagingData<Todo>> =
+        authRepository.getUserToDoPage().cachedIn(viewModelScope)
 
     //TODO: try this
     fun updateTodo(index: Int, newTitle: String, newDescription: String) {
@@ -56,12 +57,21 @@ class HomeScreenViewModal(
         )
     }
 
-    fun autoFileTodo(){
+    fun autoFileTodo() {
         _appViewModal.update {
             it.copy(
                 title = homeScreenState.value.selectedTodo?.title ?: "",
                 body = homeScreenState.value.selectedTodo?.body ?: "",
                 state = homeScreenState.value.selectedTodo?.state ?: "",
+            )
+        }
+    }
+
+    fun selectedToDoState(state: String) {
+        val index = _appViewModal.value.options.indexOf(state)
+        _appViewModal.update {
+            it.copy(
+                optionsIndex = index
             )
         }
     }
@@ -78,18 +88,19 @@ class HomeScreenViewModal(
         }
     }
 
-    fun getSelectedTodoInfo () {
-        if(_appViewModal.value.selectedTodo == null){
+    fun getSelectedTodoInfo() {
+        if (_appViewModal.value.selectedTodo == null) {
             return
         }
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.getTodoInfo(
-                todoID = homeScreenState.value.selectedTodo?.toDoId?: ""
+                todoID = homeScreenState.value.selectedTodo?.toDoId ?: ""
             ).collectLatest {
-                when(it){
+                when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true,
+                            it.copy(
+                                isLoading = true,
                                 errorMessage = null
                             )
                         }
@@ -102,6 +113,7 @@ class HomeScreenViewModal(
                             )
                         }
                     }
+
                     is Resource.Success -> {
                         it.data?.enqueue(object : Callback<ToDoInfo> {
                             override fun onResponse(
@@ -111,11 +123,11 @@ class HomeScreenViewModal(
                                 if (response.isSuccessful) {
                                     _appViewModal.update {
                                         it.copy(
-                                           selectedTodo = response.body()?.todo,
+                                            selectedTodo = response.body()?.todo,
                                             errorMessage = null
                                         )
                                     }
-//                                    getUserToDo()
+                                    selectedToDoState(response.body()?.todo?.state ?:"")
                                 } else {
                                     if (response.code() == 401) {
                                         _appViewModal.update {
@@ -151,21 +163,34 @@ class HomeScreenViewModal(
     }
 
     fun updateTodo(
+        updateState: Boolean = false,
         onSuccess: () -> Unit = {},
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            authRepository.updateTodo(
-                todoID = homeScreenState.value.selectedTodo?.toDoId ?: "",
-                title = homeScreenState.value.title ?: "",
-                body = homeScreenState.value.body ?: "",
-                state = homeScreenState.value.state ?: ""
-            ).collectLatest {
+            val updateToDoObj = Todo(
+                toDoId = homeScreenState.value.selectedTodo?.toDoId?: "",
+                title = homeScreenState.value.title?: "",
+                body = homeScreenState.value.body?: "",
+                state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: "",
+                currentPage = 1
+            )
+
+            val updateStateObj = Todo(
+                toDoId = homeScreenState.value.selectedTodo?.toDoId?: "",
+                title = homeScreenState.value.selectedTodo?.title?: "",
+                body = homeScreenState.value.selectedTodo?.body?: "",
+                state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: "",
+                currentPage = 1
+            )
+
+            authRepository.updateTodo(if(updateState) updateStateObj else updateToDoObj).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true,
+                            it.copy(
+                                isLoading = true,
                                 errorMessage = null
-                                )
+                            )
                         }
                     }
 
@@ -189,6 +214,7 @@ class HomeScreenViewModal(
                                             isLoading = false,
                                             title = "",
                                             body = "",
+                                            optionsIndex = 0,
                                             errorMessage = null
 
                                         )
@@ -232,16 +258,17 @@ class HomeScreenViewModal(
 
     fun deleteTodo(
         onSuccess: () -> Unit = {},
-    ){
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.deleteTodo(todoID = homeScreenState.value.selectedTodo?.toDoId ?: "")
                 .collectLatest {
-                    when(it){
+                    when (it) {
                         is Resource.Loading -> {
                             _appViewModal.update {
-                                it.copy(isLoading = true,
+                                it.copy(
+                                    isLoading = true,
                                     errorMessage = null
-                                    )
+                                )
                             }
                         }
 
@@ -252,6 +279,7 @@ class HomeScreenViewModal(
                                 )
                             }
                         }
+
                         is Resource.Success -> {
                             it.data?.enqueue(object : Callback<DeleteResponse> {
                                 override fun onResponse(
@@ -317,9 +345,10 @@ class HomeScreenViewModal(
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true,
+                            it.copy(
+                                isLoading = true,
                                 errorMessage = null
-                                )
+                            )
                         }
                     }
 
@@ -382,6 +411,7 @@ class HomeScreenViewModal(
             }
         }
     }
+
     fun getUserToDoFun() {
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.getUserToDos(
@@ -389,9 +419,10 @@ class HomeScreenViewModal(
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
-                            it.copy(isLoading = true,
+                            it.copy(
+                                isLoading = true,
                                 errorMessage = null
-                                )
+                            )
                         }
                     }
 

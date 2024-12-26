@@ -70,11 +70,11 @@ fun HomeScreen(
         }
     }
 
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+//    val scrollBehavior =
+//        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+//        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -96,7 +96,7 @@ fun HomeScreen(
                         overflow = TextOverflow.Ellipsis
                     )
                 },
-                scrollBehavior = scrollBehavior
+//                scrollBehavior = scrollBehavior
             )
         },
     ) {

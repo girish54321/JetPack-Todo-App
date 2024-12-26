@@ -19,7 +19,7 @@ interface HomeScreenRepository {
     fun getUserToDoPage(): Flow<PagingData<Todo>>
 
     suspend fun createToDo(title: String, body: String,state: String): Flow<Resource<Call<SuccessResponse>>>
-    suspend fun updateTodo(todoID: String, title: String, body: String,state: String): Flow<Resource<Call<SuccessResponse>>>
+    suspend fun updateTodo(todoItem:Todo): Flow<Resource<Call<SuccessResponse>>>
     suspend fun getTodoInfo(todoID: String): Flow<Resource<Call<ToDoInfo>>>
     suspend fun deleteTodo(todoID: String): Flow<Resource<Call<DeleteResponse>>>
 }
