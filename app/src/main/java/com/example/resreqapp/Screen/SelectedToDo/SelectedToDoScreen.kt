@@ -72,7 +72,6 @@ fun SelectedToDoScreen(
                             leadingIcon={ Icon(Icons.Default.Edit, contentDescription = "More options")},
                             text = { Text("Edit") },
                             onClick = {
-                                todoScreenViewModal.autoFileTodo()
                                 openCLoseMenu()
                                 navController.navigate(Screen.CreateTodoScreen.rout)
                             }
@@ -136,7 +135,7 @@ fun SelectedToDoScreen(
                     options = appViewModal.options,
                     onSelectionChange = { selectedIndex ->
                         todoScreenViewModal.selectedToDoState(appViewModal.options[selectedIndex])
-                        todoScreenViewModal.updateTodo(updateState = true){
+                        todoScreenViewModal.updateTodo {
                         }
                     },
                     selectedIndex = appViewModal.optionsIndex,

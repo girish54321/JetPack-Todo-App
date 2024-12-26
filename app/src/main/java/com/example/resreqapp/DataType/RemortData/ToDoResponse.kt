@@ -17,7 +17,7 @@ data class Todo (
     val toDoId: String? = null,
     val title: String? = null,
     val body: String? = null,
-    val state: String? = null,
+    var state: String? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null,
     val userid: String? = null

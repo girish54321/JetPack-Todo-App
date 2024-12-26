@@ -55,14 +55,10 @@ data class HomeScreenDefaultState(
     val errorMessage: ErrorMainBody? = null,
     val toDoList: List<Todo> = emptyList(),
     val toDoListCurrentPage: Int = 1,
-    var selectedTodo: Todo? = null,
+    var selectedTodo: Todo = Todo(),
 
     val options: List<String> = listOf("pending","in-progress","completed"),
     val optionsIndex: Int = 0,
-
-    val title: String = "",
-    val body: String = "",
-    val state: String = "pending"
 )
 
 data class SettingsScreenDefaultState(

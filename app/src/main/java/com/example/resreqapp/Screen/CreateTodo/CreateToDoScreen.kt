@@ -35,6 +35,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -63,7 +64,8 @@ fun CreateTodoScreen(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val appViewModal = homeScreenViewModal.homeScreenState.collectAsState().value
 
-    var isUpdate = appViewModal.selectedTodo != null
+    val isUpdate = appViewModal.selectedTodo != null
+    val todo by homeScreenViewModal.todo.collectAsState()
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -93,7 +95,7 @@ fun CreateTodoScreen(
                         .padding(8.dp)
                 ) {
                     AppInputText(
-                        value = appViewModal.title ?: "",
+                        value = todo.selectedTodo?.title ?: "",
                         label = "Title",
                         onValueChange = {
                             homeScreenViewModal.onTodoTitleChanged(it)
@@ -104,7 +106,7 @@ fun CreateTodoScreen(
                         modifier = Modifier.padding(top = 11.dp)
                     )
                     AppInputText(
-                        value = appViewModal.body ?: "",
+                        value = todo.selectedTodo?.body ?: "",
                         label = "Body",
                         onValueChange = {
                             homeScreenViewModal.onTodoBodyChanged(it)

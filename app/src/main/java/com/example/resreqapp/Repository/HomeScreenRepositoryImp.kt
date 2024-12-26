@@ -66,14 +66,12 @@ class HomeScreenRepositoryImp(
     }
 
     override suspend fun createToDo(
-        title: String,
-        body: String,
-        state: String
+        item:Todo
     ): Flow<Resource<Call<SuccessResponse>>> {
         return flow {
             emit(Resource.Loading())
             try {
-                val postData = CreateTodoRequestBody(title = title, body = body, state = state)
+                val postData = CreateTodoRequestBody(title = item.title ?: "", body = item.body ?:"", state = item.state ?: "")
                 val response = api.createToDo(postData)
                 emit(Resource.Success(response))
             } catch (e: IOException) {

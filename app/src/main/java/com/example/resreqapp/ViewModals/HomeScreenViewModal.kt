@@ -23,6 +23,7 @@ import hoods.com.quotesyt.utils.PerferenceDatastore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
@@ -38,6 +39,8 @@ class HomeScreenViewModal(
     private val _appViewModal = MutableStateFlow(HomeScreenDefaultState())
     val homeScreenState = _appViewModal.asStateFlow()
 
+    val todo: StateFlow<HomeScreenDefaultState> = homeScreenState
+
     //TODO: update item on Index
     fun updateTodo(index: Int, newTitle: String, newDescription: String) {
         _appViewModal.value = homeScreenState.value.copy(
@@ -51,35 +54,28 @@ class HomeScreenViewModal(
         )
     }
 
-    fun autoFileTodo() {
-        _appViewModal.update {
-            it.copy(
-                title = homeScreenState.value.selectedTodo?.title ?: "",
-                body = homeScreenState.value.selectedTodo?.body ?: "",
-                state = homeScreenState.value.selectedTodo?.state ?: "",
-            )
-        }
-    }
+
 
     fun onTodoTitleChanged(title: String) {
-        _appViewModal.update {
-            it.copy(title = title)
+        _appViewModal.update { currentTodo ->
+            currentTodo.copy(
+                selectedTodo = currentTodo.selectedTodo.copy(title = title)
+            )
         }
     }
 
     fun onTodoBodyChanged(body: String) {
         _appViewModal.update {
-            it.copy(body = body)
+            it.copy(
+                selectedTodo = it.selectedTodo.copy(body = body)
+            )
         }
     }
 
     fun getSelectedTodoInfo() {
-        if (_appViewModal.value.selectedTodo == null) {
-            return
-        }
         CoroutineScope(Dispatchers.IO).launch {
             authRepository.getTodoInfo(
-                todoID = homeScreenState.value.selectedTodo?.toDoId ?: ""
+                todoID = homeScreenState.value.selectedTodo.toDoId ?: ""
             ).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
@@ -108,7 +104,7 @@ class HomeScreenViewModal(
                                 if (response.isSuccessful) {
                                     _appViewModal.update {
                                         it.copy(
-                                            selectedTodo = response.body()?.todo,
+                                            selectedTodo = response.body()?.todo!!,
                                             errorMessage = null
                                         )
                                     }
@@ -149,25 +145,14 @@ class HomeScreenViewModal(
     }
 
     fun updateTodo(
-        updateState: Boolean = false,
         onSuccess: () -> Unit = {},
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            val updateToDoObj = Todo(
-                toDoId = homeScreenState.value.selectedTodo?.toDoId?: "",
-                title = homeScreenState.value.title?: "",
-                body = homeScreenState.value.body?: "",
-                state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: "",
-            )
-            val updateStateObj = Todo(
-                toDoId = homeScreenState.value.selectedTodo?.toDoId?: "",
-                title = homeScreenState.value.selectedTodo?.title?: "",
-                body = homeScreenState.value.selectedTodo?.body?: "",
-                state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: "",
-            )
+            val updateStateObj = homeScreenState.value.selectedTodo
+            updateStateObj?.state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: ""
 
             authRepository.updateTodo(
-                if(updateState) updateStateObj else updateToDoObj
+                updateStateObj!!
             ).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
@@ -197,8 +182,6 @@ class HomeScreenViewModal(
                                     _appViewModal.update {
                                         it.copy(
                                             isLoading = false,
-                                            title = "",
-                                            body = "",
                                             errorMessage = null
                                         )
                                     }
@@ -273,11 +256,8 @@ class HomeScreenViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                selectedTodo = null,
-                                                title = "",
-                                                body = "",
+                                                selectedTodo = Todo(),
                                                 errorMessage = null
-
                                             )
                                         }
                                         onSuccess()
@@ -318,12 +298,11 @@ class HomeScreenViewModal(
     fun createTodo(
         onSuccess: () -> Unit = {},
     ) {
+        if(_appViewModal.value.selectedTodo == null) {
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
-            authRepository.createToDo(
-                title = homeScreenState.value.title ?: "",
-                body = homeScreenState.value.body ?: "",
-                state = homeScreenState.value.state ?: ""
-            ).collectLatest {
+            authRepository.createToDo(_appViewModal.value.selectedTodo!!).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
@@ -352,10 +331,8 @@ class HomeScreenViewModal(
                                     _appViewModal.update {
                                         it.copy(
                                             isLoading = false,
-                                            selectedTodo = null,
-                                            title = "",
+                                            selectedTodo = Todo(),
                                             errorMessage = null,
-                                            body = ""
                                         )
                                     }
                                     onSuccess()
@@ -498,7 +475,7 @@ class HomeScreenViewModal(
     fun removeToDo() {
         _appViewModal.update {
             it.copy(
-                selectedTodo = null
+                selectedTodo = Todo()
             )
         }
     }
