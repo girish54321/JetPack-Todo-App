@@ -106,11 +106,7 @@ fun HomeScreen(
                     items(appViewModalValue.toDoList.size + 1) { index ->
                         if (index == appViewModalValue.toDoList.size) {
                             LaunchedEffect(true) {
-                                //Do something when List end has been reached
-                                if(!appViewModalValue.isLoading) {
-                                    Log.e("On End", "On End Call Api")
-                                    todoScreenViewModal.getUserToDo()
-                                }
+
                             }
                         } else {
                             val item = todoScreenViewModal.homeScreenState.value.toDoList[index]

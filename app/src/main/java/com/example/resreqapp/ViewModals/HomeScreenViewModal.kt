@@ -113,6 +113,7 @@ class HomeScreenViewModal(
                                         )
                                     }
                                     hardReload()
+                                    selectedToDoState(response.body()?.todo?.state ?: "")
                                 } else {
                                     if (response.code() == 401) {
                                         _appViewModal.update {
@@ -148,14 +149,25 @@ class HomeScreenViewModal(
     }
 
     fun updateTodo(
+        updateState: Boolean = false,
         onSuccess: () -> Unit = {},
     ) {
         CoroutineScope(Dispatchers.IO).launch {
+            val updateToDoObj = Todo(
+                toDoId = homeScreenState.value.selectedTodo?.toDoId?: "",
+                title = homeScreenState.value.title?: "",
+                body = homeScreenState.value.body?: "",
+                state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: "",
+            )
+            val updateStateObj = Todo(
+                toDoId = homeScreenState.value.selectedTodo?.toDoId?: "",
+                title = homeScreenState.value.selectedTodo?.title?: "",
+                body = homeScreenState.value.selectedTodo?.body?: "",
+                state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: "",
+            )
+
             authRepository.updateTodo(
-                todoID = homeScreenState.value.selectedTodo?.toDoId ?: "",
-                title = homeScreenState.value.title ?: "",
-                body = homeScreenState.value.body ?: "",
-                state = homeScreenState.value.state ?: ""
+                if(updateState) updateStateObj else updateToDoObj
             ).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
@@ -188,12 +200,12 @@ class HomeScreenViewModal(
                                             title = "",
                                             body = "",
                                             errorMessage = null
-
                                         )
                                     }
                                     onSuccess()
                                     getSelectedTodoInfo()
                                 } else {
+                                    getSelectedTodoInfo()
                                     if (response.code() == 401) {
                                         _appViewModal.update {
                                             it.copy(
@@ -391,6 +403,15 @@ class HomeScreenViewModal(
             )
         }
         getUserToDo()
+    }
+
+    fun selectedToDoState(state: String) {
+        val index = _appViewModal.value.options.indexOf(state)
+        _appViewModal.update {
+            it.copy(
+                optionsIndex = index
+            )
+        }
     }
 
     fun getUserToDo() {

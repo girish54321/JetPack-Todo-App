@@ -57,6 +57,9 @@ data class HomeScreenDefaultState(
     val toDoListCurrentPage: Int = 1,
     var selectedTodo: Todo? = null,
 
+    val options: List<String> = listOf("pending","in-progress","completed"),
+    val optionsIndex: Int = 0,
+
     val title: String = "",
     val body: String = "",
     val state: String = "pending"

@@ -8,6 +8,7 @@ import com.example.resreqapp.DataType.RemortData.LoginPostBody
 import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
+import com.example.resreqapp.DataType.RemortData.Todo
 import com.example.resreqapp.Domain.Repository.HomeScreenRepository
 import com.example.resreqapp.Helper.errorHelper
 import kotlinx.coroutines.flow.Flow
@@ -92,19 +93,16 @@ class HomeScreenRepositoryImp(
     }
 
     override suspend fun updateTodo(
-        todoID: String,
-        title: String,
-        body: String,
-        state: String
+        updateObj: Todo
     ): Flow<Resource<Call<SuccessResponse>>> {
         return flow {
             emit(Resource.Loading())
             try {
                 val postData = CreateTodoRequestBody(
-                    toDoId = todoID,
-                    title = title,
-                    body = body,
-                    state = state
+                    toDoId = updateObj.toDoId ?: "1",
+                    title = updateObj.title ?: "",
+                    body = updateObj.body ?: "",
+                    state = updateObj.state ?: "",
                 )
                 val response = api.updateTodo(postData)
                 emit(Resource.Success(response))
