@@ -89,7 +89,7 @@ fun SettingsScreen(
             ListItem(
                 modifier = Modifier
                     .clickable { settingViewModal.openLogoutModal() },
-                headlineContent = { Text("LogOut") },
+                headlineContent = { Text("Logout") },
                 supportingContent = { Text("LogOut form app.") },
 
                 leadingContent = {

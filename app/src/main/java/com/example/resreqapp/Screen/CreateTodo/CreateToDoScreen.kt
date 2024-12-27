@@ -121,21 +121,17 @@ fun CreateTodoScreen(
             Box(
                 modifier = Modifier.padding(top = 18.dp)
             )
-            Column(
-                modifier = Modifier
-                    .padding(14.dp)
-            ) {
-                TodoState(
-                    options = appViewModal.options,
-                    onSelectionChange = { selectedIndex ->
-                        homeScreenViewModal.selectedToDoState(appViewModal.options[selectedIndex])
-                    },
-                    selectedIndex = appViewModal.optionsIndex,
-                )
-            }
+            TodoState(
+                options = appViewModal.options,
+                onSelectionChange = { selectedIndex ->
+                    homeScreenViewModal.selectedToDoState(appViewModal.options[selectedIndex])
+                },
+                selectedIndex = appViewModal.optionsIndex,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    if(isUpdate){
+                    if (isUpdate) {
                         homeScreenViewModal.updateTodo(onSuccess = {
                             homeScreenViewModal.hardReload()
                             navController.popBackStack()
