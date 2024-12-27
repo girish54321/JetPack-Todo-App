@@ -53,6 +53,7 @@ import com.example.resreqapp.Views.AppBackButton
 import com.example.resreqapp.Views.AppInputErrorText
 import com.example.resreqapp.Views.AppInputText
 import com.example.resreqapp.Views.ToDoItem
+import com.example.resreqapp.Views.TodoState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,8 +65,7 @@ fun CreateTodoScreen(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val appViewModal = homeScreenViewModal.homeScreenState.collectAsState().value
 
-    val isUpdate = appViewModal.selectedTodo != null
-    val todo by homeScreenViewModal.todo.collectAsState()
+    val isUpdate = appViewModal.selectedTodo.toDoId != null
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -95,7 +95,7 @@ fun CreateTodoScreen(
                         .padding(8.dp)
                 ) {
                     AppInputText(
-                        value = todo.selectedTodo?.title ?: "",
+                        value = appViewModal.selectedTodo?.title ?: "",
                         label = "Title",
                         onValueChange = {
                             homeScreenViewModal.onTodoTitleChanged(it)
@@ -106,7 +106,7 @@ fun CreateTodoScreen(
                         modifier = Modifier.padding(top = 11.dp)
                     )
                     AppInputText(
-                        value = todo.selectedTodo?.body ?: "",
+                        value = appViewModal.selectedTodo?.body ?: "",
                         label = "Body",
                         onValueChange = {
                             homeScreenViewModal.onTodoBodyChanged(it)
@@ -121,6 +121,18 @@ fun CreateTodoScreen(
             Box(
                 modifier = Modifier.padding(top = 18.dp)
             )
+            Column(
+                modifier = Modifier
+                    .padding(14.dp)
+            ) {
+                TodoState(
+                    options = appViewModal.options,
+                    onSelectionChange = { selectedIndex ->
+                        homeScreenViewModal.selectedToDoState(appViewModal.options[selectedIndex])
+                    },
+                    selectedIndex = appViewModal.optionsIndex,
+                )
+            }
             Button(
                 onClick = {
                     if(isUpdate){

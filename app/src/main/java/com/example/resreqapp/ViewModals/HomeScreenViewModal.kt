@@ -39,7 +39,6 @@ class HomeScreenViewModal(
     private val _appViewModal = MutableStateFlow(HomeScreenDefaultState())
     val homeScreenState = _appViewModal.asStateFlow()
 
-    val todo: StateFlow<HomeScreenDefaultState> = homeScreenState
 
     //TODO: update item on Index
     fun updateTodo(index: Int, newTitle: String, newDescription: String) {
@@ -149,10 +148,10 @@ class HomeScreenViewModal(
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             val updateStateObj = homeScreenState.value.selectedTodo
-            updateStateObj?.state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: ""
+            updateStateObj.state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: ""
 
             authRepository.updateTodo(
-                updateStateObj!!
+                updateStateObj
             ).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
@@ -301,8 +300,10 @@ class HomeScreenViewModal(
         if(_appViewModal.value.selectedTodo == null) {
             return
         }
+        val updateStateObj = homeScreenState.value.selectedTodo
+        updateStateObj.state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: ""
         CoroutineScope(Dispatchers.IO).launch {
-            authRepository.createToDo(_appViewModal.value.selectedTodo!!).collectLatest {
+            authRepository.createToDo(updateStateObj).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {
@@ -470,6 +471,7 @@ class HomeScreenViewModal(
                 selectedTodo = item
             )
         }
+        selectedToDoState(item.state!!)
     }
 
     fun removeToDo() {
