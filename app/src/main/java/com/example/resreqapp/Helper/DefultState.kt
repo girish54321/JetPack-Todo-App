@@ -29,6 +29,12 @@ data class AuthDefaultState(
     val userEmailError: String? = null,
     val userPasswordError: String? = null,
     val userPassword: String? = null,
+    val userFirstName: String? = null,
+    val userFirstNameError: String? = null,
+    val userLastName: String? = null,
+    val userLastNameError: String? = null,
+
+    val isSignIn: Boolean = true,
 
     val bottomNavItems: List<BottomNavItem> = listOf(
         BottomNavItem(

@@ -5,6 +5,7 @@ import com.example.resreqapp.DataType.RemortData.CreateTodoRequestBody
 import com.example.resreqapp.DataType.RemortData.DeleteResponse
 import com.example.resreqapp.DataType.RemortData.LoginPostBody
 import com.example.resreqapp.DataType.RemortData.LoginResRemote
+import com.example.resreqapp.DataType.RemortData.SignUpPostBody
 import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
@@ -20,6 +21,11 @@ interface AppApi {
     @POST("auth/login")
     fun userLogin(
         @Body body: LoginPostBody
+    ): Call<LoginResRemote>
+
+    @POST("auth/signup")
+    fun userSignup(
+        @Body body: SignUpPostBody
     ): Call<LoginResRemote>
 
     @GET("/api/v1/todo/getalltodos")

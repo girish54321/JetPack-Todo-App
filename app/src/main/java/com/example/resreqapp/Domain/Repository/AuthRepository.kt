@@ -9,4 +9,5 @@ import java.io.File
 
 interface AuthRepository {
     suspend fun login(email: String, password: String): Flow<Resource<Call<LoginResRemote>>>
+    suspend fun singUp(email: String, password: String,lastName:String,firstName:String): Flow<Resource<Call<LoginResRemote>>>
 }

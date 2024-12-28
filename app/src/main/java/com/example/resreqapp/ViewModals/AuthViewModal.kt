@@ -42,9 +42,142 @@ class AuthViewModal(
         }
     }
 
+    fun onFirstNameChange(firstName: String) {
+        _appViewModal.update {
+            it.copy(userFirstName = firstName)
+        }
+    }
+
+    fun onLastNameChange(lastName: String) {
+        _appViewModal.update {
+            it.copy(userLastName = lastName)
+        }
+    }
+
+    fun toggleSignUp(){
+        _appViewModal.update {
+            it.copy(isSignIn = !authViewModalState.value.isSignIn)
+        }
+    }
+
     fun onPasswordChange(password: String) {
         _appViewModal.update {
             it.copy(userPassword = password)
+        }
+    }
+
+
+
+    fun onSingUp(){
+        if (authViewModalState.value.userEmail?.isEmpty() == true) {
+            _appViewModal.update {
+                it.copy(userEmailError = "Email is Required!")
+            }
+            return
+        } else {
+            _appViewModal.update {
+                it.copy(userEmailError = null)
+            }
+        }
+
+        if (authViewModalState.value.userPassword?.isEmpty() == true) {
+            _appViewModal.update {
+                it.copy(userPasswordError = "Password is Required!")
+            }
+            return
+        } else {
+            _appViewModal.update {
+                it.copy(userPasswordError = null)
+            }
+        }
+
+        if (authViewModalState.value.userFirstName?.isEmpty() == true) {
+            _appViewModal.update {
+                it.copy(userFirstNameError = "First Name is Required!")
+            }
+            return
+        } else {
+            _appViewModal.update {
+                it.copy(userFirstNameError = null)
+            }
+        }
+
+        if (authViewModalState.value.userLastName?.isEmpty() == true) {
+            _appViewModal.update {
+                it.copy(userLastNameError = "Last Name is Required!")
+            }
+            return
+        } else {
+            _appViewModal.update {
+                it.copy(userLastNameError = null)
+            }
+        }
+
+        _appViewModal.update {
+            it.copy(isLoading = true)
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            authRepository.singUp(
+                email = _appViewModal.value.userEmail ?: "",
+                password = _appViewModal.value.userPassword ?: "",
+                firstName = _appViewModal.value.userFirstName ?: "",
+                lastName = _appViewModal.value.userLastName ?: "",
+
+            ).collectLatest {
+                when (it) {
+                    is Resource.Loading -> {
+                        _appViewModal.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+
+                    is Resource.Success -> {
+                        it.data?.enqueue(object : Callback<LoginResRemote> {
+                            override fun onResponse(
+                                call: Call<LoginResRemote>,
+                                response: Response<LoginResRemote>,
+                            ) {
+                                if (response.isSuccessful) {
+                                    saveToken(token = response.body()?.accessToken ?: "")
+                                    _appViewModal.update {
+                                        it.copy(
+                                            isLoggedIn = true,
+                                            errorMessage = null
+                                        )
+                                    }
+                                } else {
+                                    val errorResponse = parseError(response)
+                                    _appViewModal.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            errorMessage = errorResponse,
+                                        )
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<LoginResRemote>, t: Throwable) {
+                                _appViewModal.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        errorMessage = createThrowableError(t)
+                                    )
+                                }
+                            }
+                        })
+                    }
+
+                    is Resource.Error -> {
+                        _appViewModal.update {
+                            it.copy(
+                                isLoading = false,
+                                isError = true,
+                                errorMessage = errorHelper(message = "API onFailure: "),
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 

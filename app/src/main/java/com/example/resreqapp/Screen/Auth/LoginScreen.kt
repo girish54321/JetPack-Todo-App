@@ -1,5 +1,6 @@
 package com.example.resreqapp.Screen.Auth
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
@@ -46,12 +48,16 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     authViewModal: AuthViewModal,
-){
+) {
     val authStateValue = authViewModal.authViewModalState.collectAsState().value
+
+    val isSignIn = authStateValue.isSignIn
 
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     val keyboardHeight = WindowInsets.ime.getBottom(LocalDensity.current)
+
+    val screenText = if (isSignIn) "Sign In" else "Sign Up"
 
     LaunchedEffect(key1 = keyboardHeight) {
         coroutineScope.launch {
@@ -62,7 +68,7 @@ fun LoginScreen(
     Scaffold(
         topBar = {
             LargeTopAppBar(
-                title = { Text("Login") },
+                title = { Text(screenText) },
             )
         }
     ) {
@@ -82,6 +88,31 @@ fun LoginScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.Center,
                 ) {
+                    AnimatedVisibility(!isSignIn) {
+                        Column {
+                            AppInputText(
+                                value = authStateValue.userFirstName ?: "",
+                                label = "First Name",
+                                rightIcon = Icons.Filled.Person,
+                                errorMessage = authStateValue.userFirstNameError,
+                                keyboardType = KeyboardType.Text,
+                                maxLines = 1,
+                                onValueChange = { authViewModal.onFirstNameChange(it) }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            AppInputText(
+                                value = authStateValue.userLastName ?: "",
+                                label = "Last Name",
+                                rightIcon = Icons.Filled.Person,
+                                errorMessage = authStateValue.userLastNameError,
+                                keyboardType = KeyboardType.Text,
+                                maxLines = 1,
+                                onValueChange = { authViewModal.onLastNameChange(it) }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+
                     AppInputText(
                         value = authStateValue.userEmail ?: "",
                         label = "Email",
@@ -109,11 +140,15 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            authViewModal.onLogin()
+                            if (isSignIn) {
+                                authViewModal.onLogin()
+                            } else {
+                                authViewModal.onSingUp()
+                            }
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Login")
+                        Text(screenText)
                     }
                     Column(
                         modifier = Modifier
@@ -122,8 +157,9 @@ fun LoginScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         TextButton(onClick = {
+                            authViewModal.toggleSignUp()
                         }) {
-                            Text("Don't have an account? Sign Up")
+                            Text(if (isSignIn) "Don't have an account? Sign Up" else "Have account? Sign Up")
                         }
                     }
                 }

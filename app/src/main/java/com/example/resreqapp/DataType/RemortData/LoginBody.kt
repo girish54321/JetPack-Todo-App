@@ -7,6 +7,13 @@ data class LoginPostBody(
     val password: String = ""
 )
 
+data class SignUpPostBody(
+    val email: String = "",
+    val password: String = "",
+    val firstName: String = "",
+    val lastName: String = ""
+)
+
 //if (!toDoRequest?.title) {
 //    throw createError.BadRequest("Title is required")
 //}
