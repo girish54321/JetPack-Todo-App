@@ -40,6 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -100,7 +101,8 @@ fun CreateTodoScreen(
                         onValueChange = {
                             homeScreenViewModal.onTodoTitleChanged(it)
                         },
-                        rightIcon = Icons.Filled.Edit
+                        rightIcon = Icons.Filled.Edit,
+                        keyboardType = KeyboardType.Text
                     )
                     Box(
                         modifier = Modifier.padding(top = 11.dp)
@@ -111,7 +113,9 @@ fun CreateTodoScreen(
                         onValueChange = {
                             homeScreenViewModal.onTodoBodyChanged(it)
                         },
-                        rightIcon = Icons.Filled.Info
+                        rightIcon = Icons.Filled.Info,
+                        keyboardType = KeyboardType.Text,
+                        maxLines = 10
                     )
                     Box(
                         modifier = Modifier.padding(top = 11.dp)
