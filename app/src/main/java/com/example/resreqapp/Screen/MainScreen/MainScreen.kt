@@ -14,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.example.resreqapp.Helper.Screen
 import com.example.resreqapp.Screen.HomeScreen.HomeScreen
-import com.example.resreqapp.Screen.Profile.ProfileScreen
 import com.example.resreqapp.Screen.SettingsScreen.SettingsScreen
 import com.example.resreqapp.ViewModals.AuthViewModal
 import com.example.resreqapp.ViewModals.HomeScreenViewModal

@@ -6,11 +6,6 @@ import kotlinx.serialization.json.Json
 import org.json.JSONObject
 
 fun errorHelper(message: String, errorCode: Int? = 999): ErrorMainBody {
-//    val errorObj = ErrorMainBody(
-//        status = errorCode,
-//        message = message
-//    )
-//    return errorObj
     val errorBody =
         ErrorBody(
             status = errorCode,

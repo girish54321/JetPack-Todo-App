@@ -288,6 +288,7 @@ class AuthViewModal(
                         _appViewModal.update {
                             it.copy(
                                 isLoading = false,
+                                userProfileError = errorHelper("User profile not found")
                             )
                         }
                     }
@@ -302,7 +303,8 @@ class AuthViewModal(
                                     _appViewModal.update {
                                         it.copy(
                                             userProfile = response.body()?.user!!,
-                                            errorMessage = null
+                                            userProfileError = null,
+                                            isLoading = false
                                         )
                                     }
                                 } else {
@@ -310,14 +312,14 @@ class AuthViewModal(
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                errorMessage = parseError(response)
+                                                userProfileError = parseError(response)
                                             )
                                         }
                                     } else {
                                         _appViewModal.update {
                                             it.copy(
                                                 isLoading = false,
-                                                errorMessage = parseError(response)
+                                                userProfileError = parseError(response)
                                             )
                                         }
                                     }

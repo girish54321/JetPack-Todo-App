@@ -28,6 +28,7 @@ data class AuthDefaultState(
     val errorMessage: ErrorMainBody? = null,
 
     val userProfile: LogedInUser? = null,
+    val userProfileError: ErrorMainBody? = null,
 
     val userEmail: String? = null,
     val userEmailError: String? = null,
