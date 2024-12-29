@@ -1,9 +1,11 @@
 package com.example.resreqapp.Views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,39 +31,70 @@ fun ErrorScreen(
     errorIcon: ImageVector? = Icons.Default.Warning,
     errorTitle: String? = "An error occurred",
     errorMessage: String? = "Something went wrong",
+    smallView: Boolean? = false,
     onRetry: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        if (errorIcon != null) {
-            Icon(
-                imageVector = errorIcon,
-                contentDescription = "Error Icon",
+    if (smallView == true) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
+            ListItem(
                 modifier = Modifier
-                    .size(96.dp)
-                    .padding(bottom = 16.dp)
+                    .clickable {  },
+                trailingContent = {
+                    Button(onClick = onRetry) {
+                        Text("Retry")
+                    }
+                },
+                leadingContent = {
+                    if (errorIcon != null) {
+                        Icon(
+                            imageVector = errorIcon,
+                            contentDescription = "Error Icon",
+                        )
+                    }
+                },
+                headlineContent = { Text(errorTitle ?: "") },
+                supportingContent = { Text( errorMessage ?: "") },
             )
         }
-        Text(
-            text = errorTitle ?: "",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = errorMessage ?: "",
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetry) {
-            Text("Retry")
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (errorIcon != null) {
+                Icon(
+                    imageVector = errorIcon,
+                    contentDescription = "Error Icon",
+                    modifier = Modifier
+                        .size(96.dp)
+                        .padding(bottom = 16.dp)
+                )
+            }
+            Text(
+                text = errorTitle ?: "",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = errorMessage ?: "",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = onRetry) {
+                Text("Retry")
+            }
         }
     }
 }

@@ -64,43 +64,39 @@ fun SettingsScreen(
                 authViewModal.getUserProfile()
             }, modifier = Modifier.padding(it)
         ) {
-            if(authViewModalState.userProfileError != null){
-                LazyColumn {
-                    item {
-                       ErrorScreen(errorMessage = authViewModalState.userProfileError.error?.message, onRetry = {
-                           authViewModal.getUserProfile()
-                       })
-                    }
-                }
-            } else {
+            if (appViewModal.showLogOutModal) {
+                AlertDialog(onDismissRequest = {
+                    settingViewModal.closeLogoutModal()
+                },
+                    icon = { Icon(Icons.Filled.Lock, contentDescription = null) },
+                    title = { Text(text = "Logout!") },
+                    text = {
+                        Text(
+                            "Are you sure you?"
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            settingViewModal.logout {
+                                authViewModal.logoutUser()
+                            }
+                        }) { Text("Yes") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            settingViewModal.closeLogoutModal()
+                        }) { Text("No") }
+                    })
+            }
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     item {
-                        if (appViewModal.showLogOutModal) {
-                            AlertDialog(onDismissRequest = {
-                                settingViewModal.closeLogoutModal()
-                            },
-                                icon = { Icon(Icons.Filled.Lock, contentDescription = null) },
-                                title = { Text(text = "Logout!") },
-                                text = {
-                                    Text(
-                                        "Are you sure you?"
-                                    )
-                                },
-                                confirmButton = {
-                                    TextButton(onClick = {
-                                        settingViewModal.logout {
-                                            authViewModal.logoutUser()
-                                        }
-                                    }) { Text("Yes") }
-                                },
-                                dismissButton = {
-                                    TextButton(onClick = {
-                                        settingViewModal.closeLogoutModal()
-                                    }) { Text("No") }
-                                })
-                        }
+                       if(authViewModalState.userProfileError != null) {
+                           ErrorScreen(errorMessage = authViewModalState.userProfileError.error?.message, smallView = true, onRetry = {
+                               authViewModal.getUserProfile()
+                           })
+                       }
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -147,7 +143,6 @@ fun SettingsScreen(
                                 )
                             })
                     }
-                }
             }
         }
     }
