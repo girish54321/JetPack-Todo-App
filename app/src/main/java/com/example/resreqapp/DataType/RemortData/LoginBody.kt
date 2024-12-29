@@ -38,6 +38,11 @@ data class LoginResRemote (
     val refreshToken: String? = null
 )
 
+data class UserProfileDatan (
+    @SerializedName("users")
+    val user: LogedInUser? = null,
+)
+
 data class LogedInUser (
     val userid: String? = null,
     val firstName: String? = null,

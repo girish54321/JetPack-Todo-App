@@ -7,7 +7,9 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.resreqapp.DataType.RemortData.ErrorBody
 import com.example.resreqapp.DataType.RemortData.ErrorMainBody
+import com.example.resreqapp.DataType.RemortData.LogedInUser
 import com.example.resreqapp.DataType.RemortData.Todo
+import com.example.resreqapp.DataType.RemortData.UserProfileDatan
 
 data class BottomNavItem(
     val title: String,
@@ -24,6 +26,8 @@ data class AuthDefaultState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val errorMessage: ErrorMainBody? = null,
+
+    val userProfile: LogedInUser? = null,
 
     val userEmail: String? = null,
     val userEmailError: String? = null,

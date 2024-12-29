@@ -9,6 +9,7 @@ import com.example.resreqapp.DataType.RemortData.SignUpPostBody
 import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
+import com.example.resreqapp.DataType.RemortData.UserProfileDatan
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -27,6 +28,9 @@ interface AppApi {
     fun userSignup(
         @Body body: SignUpPostBody
     ): Call<LoginResRemote>
+
+    @GET("/api/v1/profile/user-profile")
+    fun getUserProfile(): Call<UserProfileDatan>
 
     @GET("/api/v1/todo/getalltodos")
     fun getUserToDoApi(): Call<ToDoResponse>
