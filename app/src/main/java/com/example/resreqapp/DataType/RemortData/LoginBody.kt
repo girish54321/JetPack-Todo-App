@@ -7,6 +7,13 @@ data class LoginPostBody(
     val password: String = ""
 )
 
+data class SignUpPostBody(
+    val email: String = "",
+    val password: String = "",
+    val firstName: String = "",
+    val lastName: String = ""
+)
+
 //if (!toDoRequest?.title) {
 //    throw createError.BadRequest("Title is required")
 //}
@@ -29,6 +36,11 @@ data class LoginResRemote (
     val user: LogedInUser? = null,
     val accessToken: String? = null,
     val refreshToken: String? = null
+)
+
+data class UserProfileDatan (
+    @SerializedName("users")
+    val user: LogedInUser? = null,
 )
 
 data class LogedInUser (

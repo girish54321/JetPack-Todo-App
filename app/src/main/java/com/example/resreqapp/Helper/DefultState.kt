@@ -7,7 +7,9 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.resreqapp.DataType.RemortData.ErrorBody
 import com.example.resreqapp.DataType.RemortData.ErrorMainBody
+import com.example.resreqapp.DataType.RemortData.LogedInUser
 import com.example.resreqapp.DataType.RemortData.Todo
+import com.example.resreqapp.DataType.RemortData.UserProfileDatan
 
 data class BottomNavItem(
     val title: String,
@@ -25,10 +27,19 @@ data class AuthDefaultState(
     val isError: Boolean = false,
     val errorMessage: ErrorMainBody? = null,
 
+    val userProfile: LogedInUser? = null,
+    val userProfileError: ErrorMainBody? = null,
+
     val userEmail: String? = null,
     val userEmailError: String? = null,
     val userPasswordError: String? = null,
     val userPassword: String? = null,
+    val userFirstName: String? = null,
+    val userFirstNameError: String? = null,
+    val userLastName: String? = null,
+    val userLastNameError: String? = null,
+
+    val isSignIn: Boolean = true,
 
     val bottomNavItems: List<BottomNavItem> = listOf(
         BottomNavItem(
@@ -54,11 +65,11 @@ data class HomeScreenDefaultState(
     val isLoading: Boolean = false,
     val errorMessage: ErrorMainBody? = null,
     val toDoList: List<Todo> = emptyList(),
-    var selectedTodo: Todo? = null,
+    val toDoListCurrentPage: Int = 1,
+    var selectedTodo: Todo = Todo(),
 
-    val title: String = "",
-    val body: String = "",
-    val state: String = "pending"
+    val options: List<String> = listOf("pending","in-progress","completed"),
+    val optionsIndex: Int = 0,
 )
 
 data class SettingsScreenDefaultState(

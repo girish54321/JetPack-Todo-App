@@ -27,10 +27,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.resreqapp.Helper.Screen
 import com.example.resreqapp.ViewModals.HomeScreenViewModal
 import com.example.resreqapp.Views.AppBackButton
+import com.example.resreqapp.Views.AppInputErrorText
+import com.example.resreqapp.Views.TodoState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +72,6 @@ fun SelectedToDoScreen(
                             leadingIcon={ Icon(Icons.Default.Edit, contentDescription = "More options")},
                             text = { Text("Edit") },
                             onClick = {
-                                todoScreenViewModal.autoFileTodo()
                                 openCLoseMenu()
                                 navController.navigate(Screen.CreateTodoScreen.rout)
                             }
@@ -124,6 +126,23 @@ fun SelectedToDoScreen(
                     .clickable {  },
                 headlineContent = { Text(appViewModal.selectedTodo?.title ?: "Not There") },
                 supportingContent = { Text(appViewModal.selectedTodo?.body ?: "Not THere") },
+            )
+            Column(
+                modifier = Modifier
+                    .padding(14.dp)
+            ) {
+                TodoState(
+                    options = appViewModal.options,
+                    onSelectionChange = { selectedIndex ->
+                        todoScreenViewModal.selectedToDoState(appViewModal.options[selectedIndex])
+                        todoScreenViewModal.updateTodo {
+                        }
+                    },
+                    selectedIndex = appViewModal.optionsIndex,
+                )
+            }
+            AppInputErrorText(
+                errorText = appViewModal.errorMessage?.error?.message ?: ""
             )
         }
     }

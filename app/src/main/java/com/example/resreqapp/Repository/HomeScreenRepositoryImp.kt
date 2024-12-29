@@ -8,6 +8,7 @@ import com.example.resreqapp.DataType.RemortData.LoginPostBody
 import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
+import com.example.resreqapp.DataType.RemortData.Todo
 import com.example.resreqapp.Domain.Repository.HomeScreenRepository
 import com.example.resreqapp.Helper.errorHelper
 import kotlinx.coroutines.flow.Flow
@@ -20,11 +21,33 @@ import java.io.IOException
 class HomeScreenRepositoryImp(
     private val api: AppApi
 ) : HomeScreenRepository {
-    override suspend fun getUserToDos(): Flow<Resource<Call<ToDoResponse>>> {
+//    override suspend fun getUserToDos(): Flow<Resource<Call<ToDoResponse>>> {
+//        return flow {
+//            emit(Resource.Loading())
+//            try {
+//                val response = api.getUserToDoApi()
+//                emit(Resource.Success(response))
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//                emit(Resource.Error(errorObj = errorHelper(message = e.toString())))
+//                return@flow
+//            } catch (e: HttpException) {
+//                e.printStackTrace()
+//                emit(Resource.Error(errorObj = errorHelper(message = e.toString())))
+//                return@flow
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                emit(Resource.Error(errorObj = errorHelper(message = e.toString())))
+//                return@flow
+//            }
+//        }
+//    }
+
+    override suspend fun getToDo(page:Int): Flow<Resource<Call<ToDoResponse>>> {
         return flow {
             emit(Resource.Loading())
             try {
-                val response = api.getUserToDoApi()
+                val response = api.getToDo(page,5)
                 emit(Resource.Success(response))
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -43,14 +66,12 @@ class HomeScreenRepositoryImp(
     }
 
     override suspend fun createToDo(
-        title: String,
-        body: String,
-        state: String
+        item:Todo
     ): Flow<Resource<Call<SuccessResponse>>> {
         return flow {
             emit(Resource.Loading())
             try {
-                val postData = CreateTodoRequestBody(title = title, body = body, state = state)
+                val postData = CreateTodoRequestBody(title = item.title ?: "", body = item.body ?:"", state = item.state ?: "")
                 val response = api.createToDo(postData)
                 emit(Resource.Success(response))
             } catch (e: IOException) {
@@ -70,19 +91,16 @@ class HomeScreenRepositoryImp(
     }
 
     override suspend fun updateTodo(
-        todoID: String,
-        title: String,
-        body: String,
-        state: String
+        updateObj: Todo
     ): Flow<Resource<Call<SuccessResponse>>> {
         return flow {
             emit(Resource.Loading())
             try {
                 val postData = CreateTodoRequestBody(
-                    toDoId = todoID,
-                    title = title,
-                    body = body,
-                    state = state
+                    toDoId = updateObj.toDoId ?: "1",
+                    title = updateObj.title ?: "",
+                    body = updateObj.body ?: "",
+                    state = updateObj.state ?: "",
                 )
                 val response = api.updateTodo(postData)
                 emit(Resource.Success(response))

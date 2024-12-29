@@ -35,10 +35,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,6 +54,7 @@ import com.example.resreqapp.Views.AppBackButton
 import com.example.resreqapp.Views.AppInputErrorText
 import com.example.resreqapp.Views.AppInputText
 import com.example.resreqapp.Views.ToDoItem
+import com.example.resreqapp.Views.TodoState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +66,7 @@ fun CreateTodoScreen(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val appViewModal = homeScreenViewModal.homeScreenState.collectAsState().value
 
-    var isUpdate = appViewModal.selectedTodo != null
+    val isUpdate = appViewModal.selectedTodo.toDoId != null
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -93,23 +96,26 @@ fun CreateTodoScreen(
                         .padding(8.dp)
                 ) {
                     AppInputText(
-                        value = appViewModal.title ?: "",
+                        value = appViewModal.selectedTodo?.title ?: "",
                         label = "Title",
                         onValueChange = {
                             homeScreenViewModal.onTodoTitleChanged(it)
                         },
-                        rightIcon = Icons.Filled.Edit
+                        rightIcon = Icons.Filled.Edit,
+                        keyboardType = KeyboardType.Text
                     )
                     Box(
                         modifier = Modifier.padding(top = 11.dp)
                     )
                     AppInputText(
-                        value = appViewModal.body ?: "",
+                        value = appViewModal.selectedTodo?.body ?: "",
                         label = "Body",
                         onValueChange = {
                             homeScreenViewModal.onTodoBodyChanged(it)
                         },
-                        rightIcon = Icons.Filled.Info
+                        rightIcon = Icons.Filled.Info,
+                        keyboardType = KeyboardType.Text,
+                        maxLines = 10
                     )
                     Box(
                         modifier = Modifier.padding(top = 11.dp)
@@ -119,14 +125,24 @@ fun CreateTodoScreen(
             Box(
                 modifier = Modifier.padding(top = 18.dp)
             )
+            TodoState(
+                options = appViewModal.options,
+                onSelectionChange = { selectedIndex ->
+                    homeScreenViewModal.selectedToDoState(appViewModal.options[selectedIndex])
+                },
+                selectedIndex = appViewModal.optionsIndex,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    if(isUpdate){
+                    if (isUpdate) {
                         homeScreenViewModal.updateTodo(onSuccess = {
+                            homeScreenViewModal.hardReload()
                             navController.popBackStack()
                         })
                     } else {
                         homeScreenViewModal.createTodo(onSuccess = {
+                            homeScreenViewModal.hardReload()
                             navController.popBackStack()
                         })
                     }

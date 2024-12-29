@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
@@ -14,6 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -23,13 +27,19 @@ fun AppInputText(
     label: String,
     onValueChange: (String) -> Unit = {},
     rightIcon: ImageVector,
-    errorMessage: String? = null
+    keyboardType: KeyboardType,
+    maxLines: Int = 1,
+    errorMessage: String? = null,
+    passwordVisible: Boolean = true
 ) {
     Column {
         OutlinedTextField(
             value = value,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             onValueChange = onValueChange,
             label = { Text(label) },
+            maxLines = maxLines,
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 Icon(
                     imageVector = rightIcon,
@@ -83,7 +93,8 @@ fun AppInputTextPreview() {
                value = "",
                label = "Email",
                onValueChange = {},
-               rightIcon = Icons.Filled.Home
+               rightIcon = Icons.Filled.Home,
+               keyboardType = KeyboardType.Email
            )
        }
    }
