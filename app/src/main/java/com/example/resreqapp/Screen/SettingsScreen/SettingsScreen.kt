@@ -130,8 +130,7 @@ fun SettingsScreen(
                             }
                         }
                         ListItem(modifier = Modifier.clickable {
-                            authViewModal.getUserProfile()
-//                        settingViewModal.openLogoutModal()
+                        settingViewModal.openLogoutModal()
                         },
                             headlineContent = { Text("Logout") },
                             supportingContent = { Text("LogOut form app.") },
