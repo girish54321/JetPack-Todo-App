@@ -1,6 +1,12 @@
 package com.example.resreqapp.Screen.CreateTodo
 
+import android.content.Context
+import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,6 +72,31 @@ fun CreateTodoScreen(
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val appViewModal = homeScreenViewModal.homeScreenState.collectAsState().value
+    val context = LocalContext.current
+    fun getFilePathFromContentUri(context: Context, contentUri: Uri): String? {
+
+        var filePath: String? = null
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+
+        context.contentResolver.query(contentUri, projection, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                filePath = cursor.getString(columnIndex)
+            }
+        }
+        return filePath
+    }
+
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            Log.d("PhotoPicker", "Selected URI: $uri")
+            homeScreenViewModal.pickFile(getFilePathFromContentUri(context,uri)!!)
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+        }
+    }
+
+
 
     val isUpdate = appViewModal.selectedTodo.toDoId != null
 
@@ -155,6 +187,14 @@ fun CreateTodoScreen(
             AppInputErrorText(
                 errorText = appViewModal.errorMessage?.error?.message ?: ""
             )
+            Button(
+                onClick = {
+                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Pick Image")
+            }
         }
     }
 }

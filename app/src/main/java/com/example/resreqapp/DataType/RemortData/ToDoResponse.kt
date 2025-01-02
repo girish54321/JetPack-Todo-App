@@ -1,5 +1,7 @@
 package com.example.resreqapp.DataType.RemortData
 
+import android.net.Uri
+
 
 data class ToDoResponse (
     val totalPages: Int? = null,
@@ -20,7 +22,20 @@ data class Todo (
     var state: String? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null,
-    val userid: String? = null
+    val userid: String? = null,
+    val filePath: String? = null,
+    val files: List<File>? = null
+)
+
+data class File (
+    val fileID: String? = null,
+    val fileName: String? = null,
+    val fileSize: String? = null,
+    val type: String? = null,
+    val createdAt: String? = null,
+    val updatedAt: String? = null,
+    val toDoID: String? = null,
+    val userID: String? = null
 )
 
 data class SuccessResponse (

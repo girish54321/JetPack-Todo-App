@@ -10,11 +10,15 @@ import com.example.resreqapp.DataType.RemortData.SuccessResponse
 import com.example.resreqapp.DataType.RemortData.ToDoInfo
 import com.example.resreqapp.DataType.RemortData.ToDoResponse
 import com.example.resreqapp.DataType.RemortData.UserProfileDatan
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -41,9 +45,13 @@ interface AppApi {
         @Query("size") perPage: Int = 10,
     ): Call<ToDoResponse>
 
+    @Multipart
     @POST("/api/v1/todo/addtodo")
-    fun createToDo(
-        @Body body: CreateTodoRequestBody
+     fun createToDo(
+    @Part file: MultipartBody.Part?,
+    @Part("title") title: RequestBody,
+    @Part("body") body: RequestBody,
+    @Part("state") state: RequestBody,
     ): Call<SuccessResponse>
 
     @POST("/api/v1/todo/updatetodo")

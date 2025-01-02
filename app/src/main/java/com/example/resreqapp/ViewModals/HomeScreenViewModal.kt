@@ -2,6 +2,7 @@ package com.example.resreqapp.ViewModals
 
 import AuthDefaultState
 import HomeScreenDefaultState
+import android.net.Uri
 import android.os.Handler
 import android.util.Log
 import androidx.compose.ui.text.font.createFontFamilyResolver
@@ -53,7 +54,11 @@ class HomeScreenViewModal(
         )
     }
 
-
+    fun pickFile(filePath:String){
+        _appViewModal.update {
+            it.copy(selectedTodo = it.selectedTodo.copy(filePath = filePath))
+        }
+    }
 
     fun onTodoTitleChanged(title: String) {
         _appViewModal.update { currentTodo ->
@@ -294,6 +299,8 @@ class HomeScreenViewModal(
         }
     }
 
+
+
     fun createTodo(
         onSuccess: () -> Unit = {},
     ) {
@@ -303,7 +310,7 @@ class HomeScreenViewModal(
         val updateStateObj = homeScreenState.value.selectedTodo
         updateStateObj.state = homeScreenState.value.options[homeScreenState.value.optionsIndex]?: ""
         CoroutineScope(Dispatchers.IO).launch {
-            authRepository.createToDo(updateStateObj).collectLatest {
+            authRepository.createToDo(updateStateObj,_appViewModal.value.selectedTodo.filePath).collectLatest {
                 when (it) {
                     is Resource.Loading -> {
                         _appViewModal.update {

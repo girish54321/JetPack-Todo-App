@@ -1,15 +1,19 @@
 package com.example.resreqapp.Screen.SelectedToDo
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,8 +31,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import com.example.jetpackunsplash.Const.Constants.SERVER_URL
 import com.example.resreqapp.Helper.Screen
 import com.example.resreqapp.ViewModals.HomeScreenViewModal
 import com.example.resreqapp.Views.AppBackButton
@@ -121,12 +128,31 @@ fun SelectedToDoScreen(
                     }
                 )
             }
-            ListItem(
+            Card(
                 modifier = Modifier
-                    .clickable {  },
-                headlineContent = { Text(appViewModal.selectedTodo?.title ?: "Not There") },
-                supportingContent = { Text(appViewModal.selectedTodo?.body ?: "Not THere") },
-            )
+                    .fillMaxWidth()
+                    .padding(14.dp),
+            ) {
+                Row (
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    appViewModal.selectedTodo.files?.map {
+                        AsyncImage(
+                            model = "$SERVER_URL/${it.fileName}",
+                            contentDescription = "Translated description of what the image contains",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.size(120.dp)
+                        )
+                    }
+                }
+
+                ListItem(
+                    modifier = Modifier
+                        .clickable { },
+                    headlineContent = { Text(appViewModal.selectedTodo?.title ?: "Not There") },
+                    supportingContent = { Text(appViewModal.selectedTodo?.body ?: "Not THere") },
+                )
+            }
             Column(
                 modifier = Modifier
                     .padding(14.dp)
